@@ -1,0 +1,34 @@
+body {
+	color:white;
+	background:url("background2.png") no-repeat center center fixed;
+	background-size:cover;
+	height:100%;
+	width:100%;
+	margin:auto;
+	text-align:center;
+	font-family:batang;
+}
+article {
+	font-size:320%;	
+}
+#timetable {
+	font-size:50%;
+}
+#lunchMenu,#totalTime {
+	position:absolute;
+}
+#lunchMenu {
+	font-size:80%;
+	left:10px;
+	top:60px;
+}
+#totalTime {
+	right:10px;
+	top:100px;
+}
+#timetable {
+	font-size:80%;
+}
+footer {
+	font-size:70%;
+}
