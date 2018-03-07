@@ -6,5 +6,5 @@ A web-based timer for classrooms. May not be accurate or up-to-date.
 - Play sound some time before the class/recess starts. Unfortunately, no sound is included; you have to insert your own.
 
 ## TODO
-- Replace unreadable constant arrays with local file I/O.
+- Replace unreadable data lists with local file I/O.
 - Put the sound and background files back.
