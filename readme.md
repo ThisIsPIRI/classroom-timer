@@ -8,3 +8,5 @@ A web-based timer for classrooms. May not be accurate or up-to-date.
 ## TODO
 - Replace unreadable data lists with local file I/O.
 - Put the sound and background files back.
+- Find a way to lift CORS and general security restrictions(or port to electron or other native platform altogether so we don't have to worry about them).
+- Implement the rest of file parsing.
