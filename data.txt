@@ -1,10 +1,10 @@
-timetable
+ï»¿timetable
 sunday end
-monday ¿ù1 ¿ù2 ¿ù3 ¿ù4 ¿ù5 ¿ù6 end
-tuesday È­1 È­2 È­3 È­4 È­5 end
-wednesday ¼ö1 ¼ö2 ¼ö3 end
-thursday ¸ñ1 ¸ñ2 ¸ñ3 ¸ñ4 ¸ñ5 ¸ñ6 ¸ñ7 end
-friday ±Ý1 ±Ý2 ±Ý3 ±Ý4 end
+monday ì›”1 ì›”2 ì›”3 ì›”4 ì›”5 ì›”6 end
+tuesday í™”1 í™”2 í™”3 í™”4 í™”5 end
+wednesday ìˆ˜1 ìˆ˜2 ìˆ˜3 end
+thursday ëª©1 ëª©2 ëª©3 ëª©4 ëª©5 ëª©6 ëª©7 end
+friday ê¸ˆ1 ê¸ˆ2 ê¸ˆ3 ê¸ˆ4 end
 saturday end
 
 lunchURL
