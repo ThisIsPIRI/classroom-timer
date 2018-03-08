@@ -4,7 +4,7 @@ monday 월1 월2 월3 월4 월5 월6 end
 tuesday 화1 화2 화3 화4 화5 end
 wednesday 수1 수2 수3 end
 thursday 목1 목2 목3 목4 목5 목6 목7 end
-friday 금1 end
+friday 금1 금2 금3 금4 end
 saturday end
 
 lunchURL

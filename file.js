@@ -3,6 +3,7 @@ const fileReader = {
 	read : function(fileName, callback) {
 		const request = new XMLHttpRequest();
 		request.open("GET", fileName, true);
+		request.responseType = "text";
 		request.onload = function() {
 			callback(request.responseText);
 		}

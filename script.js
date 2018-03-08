@@ -17,12 +17,6 @@ function dayWeek(n, start, lun, lunStart, sub) {
 	this.lunchStart = lunStart;
 }
 
-//default timetable
-let subjects = [[], ["월요", "병을", "이기", "는법", "오교", "시부", "터"],
-		["화요일", "시간표"],
-		["수요일", "시간표"],
-		["목요일", "시간표"],
-		["금요일", "시간표"], []];
 let weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
 let startTimes = [0, 32400, 31800, 31200, 31800, 31800, 0];
 let lunchTimes = [0, 3000, 3000, 2400, 3000, 3000, 0]; //theoretically every class has a preceding freetime. lunch time is not considered a freetime so -10min from lunch times to simulate freetimes preceding fifth class.
@@ -134,19 +128,38 @@ const dayUpdate = function() {
 };
 dayUpdate();
 
-//override the default timetable if a temporary timetable exists
+//override the default schedule if a temporary timetable exists
 if(!isNaN(temporaryStart))
 	startTimes[initDay] = temporaryStart;
 if(!isNaN(temporaryLunch))
 	lunchTimes[initDay] = temporaryLunch;
 if(!isNaN(temporaryLunchStart))
 	lunchStarts[initDay] = temporaryLunchStart;
-if(!isNaN(temporarySubject))
-	subjects[initDay] = temporarySubject;
 if(!isNaN(temporaryClass))
 	classTime = temporaryClass;
 if(!isNaN(temporaryRest))
 	restTime = temporaryRest;
+
+const subjects = [[], [], [], [], [], [], []];
+fileReader.read("data.txt", function(data) {
+	data = data.replace(/\n/g, " ");
+	var words = data.split(" ").map(function(word) {return word.trim();}); //Separate each words and remove preceding and trailing whitespaces
+	for(var index = 0;index < words.length;index++) { //Parse the file. Warning: index is modified inside the loop.
+		console.log(words[index]);
+		if(words[index] == "timetable") {
+			index++;
+			for(var days = 0;days < 7;days++) {
+				console.log("days");
+				while(words[index] != "end") { //Save the subjects of a day of the week
+					subjects[days].push(words[index]);
+					index++;
+					console.log(words[index]);
+				}
+				index += 2;
+			}
+		}
+	}
+});
 
 //construct dayWeek objects
 for(var i  = 0;i < 7;i++) {
@@ -154,6 +167,3 @@ for(var i  = 0;i < 7;i++) {
 }
 //register the interval
 setInterval(update, 1000);
-fileReader.read("data.txt", function(data) {
-	console.log(data);
-});
