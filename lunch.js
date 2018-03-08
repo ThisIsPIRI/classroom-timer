@@ -30,6 +30,6 @@ const getLunchData = function() {
 			i++;
 		}
 	}
-	request.open("GET", "http://stu.<your region>.go.kr/sts_sci_md00_001.do?schulCode=<your code>&schulCrseScCode=<your code>&SchulKndScCode=<your code>&schYm=" + lunchDate.getFullYear() + (lunchDate.getMonth() + 1), true);
+	request.open("GET", "http://stu.sen.go.kr/sts_sci_md00_001.do?schulCode=B100000456&schulCrseScCode=3&SchulKndScCode=04&schYm=" + lunchDate.getFullYear() + (lunchDate.getMonth() + 1), true);
 	request.send();
 }

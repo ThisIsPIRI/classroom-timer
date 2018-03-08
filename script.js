@@ -154,3 +154,6 @@ for(var i  = 0;i < 7;i++) {
 }
 //register the interval
 setInterval(update, 1000);
+fileReader.read("data.txt", function(data) {
+	console.log(data);
+});
