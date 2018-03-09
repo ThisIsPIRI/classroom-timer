@@ -1,4 +1,5 @@
 //update these to override the default timetable
+//TODO put these in data.txt as well
 const temporaryStart = NaN, temporaryLunch = NaN, temporaryLunchStart = NaN;
 const temporarySubject = NaN;
 const temporaryClass = NaN, temporaryRest = NaN;

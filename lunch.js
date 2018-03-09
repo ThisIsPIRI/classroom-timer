@@ -35,3 +35,4 @@ const getLunchData = function(callback) { //Pass a function as callback to recei
 	request.open("GET", lunchURL + lunchDate.getFullYear() + ("0" + (lunchDate.getMonth() + 1)).slice(-2), true);
 	request.send();
 }
+//TODO make getDinnerData() or refactor above to getMenuData() and make it accept the form of the meal.
