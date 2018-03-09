@@ -4,11 +4,15 @@ monday 월1 월2 월3 월4 월5 월6 end
 tuesday 화1 화2 화3 화4 화5 end
 wednesday 수1 수2 수3 end
 thursday 목1 목2 목3 목4 목5 목6 목7 end
-friday 금1 금2 금3 금4 end
+friday 금1 금2 금3 금4 금5 금6 금7 금8 금9 금10 금11 end
 saturday end
+end
 
 lunchURL
-example.com
+http://stu.sen.go.kr/sts_sci_md00_001.do?schulCode=B100000456&schulCrseScCode=3&SchulKndScCode=04&schYm=
+end
 
 backgrounds
-background2.png rgb(255,255,255) rgb(30,30,30)
+black.png rgb(255,255,255) rgb(30,30,30)
+white.png rgb(0,0,0) rgb(200,200,200)
+end

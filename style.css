@@ -11,14 +11,11 @@ body {
 article {
 	font-size:320%;	
 }
-#timetable {
-	font-size:50%;
-}
 #lunchMenu,#totalTime {
 	position:absolute;
 }
 #lunchMenu {
-	font-size:80%;
+	font-size:70%;
 	left:10px;
 	top:60px;
 }

@@ -123,7 +123,6 @@ const dayUpdate = function() {
 	var initDate = new Date();
 	initDay = initDate.getDay();
 	date.innerHTML = initDate.getFullYear() + "년 " + (initDate.getMonth() + 1) + "월 " + initDate.getDate() + "일 " + weekNames[initDay];
-	getLunchData();
 	setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - initDate.getMilliseconds());
 };
 dayUpdate();
@@ -143,27 +142,44 @@ if(!isNaN(temporaryRest))
 const subjects = [[], [], [], [], [], [], []];
 fileReader.read("data.txt", function(data) {
 	data = data.replace(/\n/g, " ");
-	var words = data.split(" ").map(function(word) {return word.trim();}); //Separate each words and remove preceding and trailing whitespaces
+	var words = data.split(" ").map(function(word) {return word.trim();}); //Separate each words and remove preceding and trailing whitespaces.
 	for(var index = 0;index < words.length;index++) { //Parse the file. Warning: index is modified inside the loop.
-		console.log(words[index]);
-		if(words[index] == "timetable") {
-			index++;
-			for(var days = 0;days < 7;days++) {
-				console.log("days");
-				while(words[index] != "end") { //Save the subjects of a day of the week
-					subjects[days].push(words[index]);
-					index++;
-					console.log(words[index]);
+		switch(words[index]) {
+			case "timetable":
+				index += 2; //Jump to the first subject(or "end" if there is no subject on the first day(sunday)).
+				for(var days = 0;days < 7;days++) {
+					console.log("days");
+					while(words[index] != "end") { //Save the subjects of a day of the week.
+						subjects[days].push(words[index]);
+						console.log(words[index]);
+						index++;
+					}
+					index += 2;
 				}
-				index += 2;
-			}
+				break;
+			case "lunchURL":
+				lunchURL = words[++index];
+				console.log(lunchURL);
+				break;
+			case "backgrounds":
+				index++;
+				while(words[index] != "end") {
+					backgroundList.push(new Background(words[index], words[index + 1], words[index + 2]));
+					index += 3;
+				}
+				//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
+				backgroundNum = backgroundList.length - 1;
+				changeBackground();
+				break;
 		}
 	}
 });
-
-//construct dayWeek objects
+//Construct dayWeek objects
 for(var i  = 0;i < 7;i++) {
 	week.push(new dayWeek(weekNames[i], startTimes[i], lunchTimes[i], lunchStarts[i], subjects[i]));
 }
-//register the interval
+getLunchData(function(menu) {lunchMenu.innerHTML = makeLunchString(menu);}); //Fetch the lunch menu and display it.
+//Update the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
+timetable.innerHTML = makeTimetableString(week[initDay], 2100000000);
+//Register the interval
 setInterval(update, 1000);
