@@ -1,8 +1,3 @@
-//update these to override the default timetable
-//TODO put these in data.txt as well
-const temporaryStart = NaN, temporaryLunch = NaN, temporaryLunchStart = NaN;
-const temporarySubject = NaN;
-const temporaryClass = NaN, temporaryRest = NaN;
 //testing
 /*const tempDate = new Date();
 const temporaryStart = tempDate.getHours() * 60 * 60 + tempDate.getMinutes() * 60 + tempDate.getSeconds() + 5, temporaryLunch = 10, temporaryLunchStart = 3;
@@ -12,23 +7,20 @@ const temporaryClass = 5, temporaryRest = 5;*/
 //day information constructor
 function dayWeek(n, start, lun, lunStart, sub) {
 	this.name = n;
-	this.startTime = start;
-	this.subjects = sub;
-	this.lunchTime = lun;
-	this.lunchStart = lunStart;
+	//No optional arguments; we have to support IEs.
+	this.startTime = start !== undefined ? start : 0;
+	this.subjects = sub !== undefined ? sub : [];
+	this.lunchTime = lun !== undefined ? lun : 0;
+	this.lunchStart = lunStart !== undefined ? lunStart : 0;
 }
 
-let weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-let startTimes = [0, 32400, 31800, 31200, 31800, 31800, 0];
-let lunchTimes = [0, 3000, 3000, 2400, 3000, 3000, 0]; //theoretically every class has a preceding freetime. lunch time is not considered a freetime so -10min from lunch times to simulate freetimes preceding fifth class.
-let lunchStarts = [0, 3, 3, 3, 3, 3, 0];
-let classTime = 2700, restTime = 600;
-
-//global variables
-var inFreetime = undefined;
+//elements
 const date = document.getElementById("date"), time = document.getElementById("time"), subject = document.getElementById("subject");
 const remaining = document.getElementById("remaining"), timetable = document.getElementById("timetable");
 const lunchMenu = document.getElementById("lunchMenu"), totalTime = document.getElementById("totalTime");
+//other global variables
+const weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+var inFreetime = undefined;
 const minute1 = new Audio("1minute.mp3"), classStarted = new Audio("classStarted.mp3");
 var week = [];
 
@@ -128,57 +120,57 @@ const dayUpdate = function() {
 };
 dayUpdate();
 
-//override the default schedule if a temporary timetable exists
-if(!isNaN(temporaryStart))
-	startTimes[initDay] = temporaryStart;
-if(!isNaN(temporaryLunch))
-	lunchTimes[initDay] = temporaryLunch;
-if(!isNaN(temporaryLunchStart))
-	lunchStarts[initDay] = temporaryLunchStart;
-if(!isNaN(temporaryClass))
-	classTime = temporaryClass;
-if(!isNaN(temporaryRest))
-	restTime = temporaryRest;
+//Construct dayWeek objects. Other properties will be assigned below while parsing.
+for(var i  = 0;i < 7;i++) {
+	week.push(new dayWeek(weekNames[i]));
+}
 
-const subjects = [[], [], [], [], [], [], []];
 fileReader.read("data.txt", function(data) {
-	data = data.replace(/\n/g, " ");
+	data = data.replace(/\n/g, " "); //Replace newlines with spaces
 	var words = data.split(" ").map(function(word) {return word.trim();}); //Separate each words and remove preceding and trailing whitespaces.
 	for(var index = 0;index < words.length;index++) { //Parse the file. Warning: index is modified inside the loop.
 		switch(words[index]) {
-			case "timetable":
-				index += 2; //Jump to the first subject(or "end" if there is no subject on the first day(sunday)).
-				for(var days = 0;days < 7;days++) {
-					console.log("days");
-					while(words[index] != "end") { //Save the subjects of a day of the week.
-						subjects[days].push(words[index]);
-						console.log(words[index]);
-						index++;
+		case "schedule":
+			index++;
+			while(words[index] !== "end") {
+				var target = words[index]; //startTime, lunchTime, etc.
+				if(week[0][target] === undefined) { //If a dayWeek object lacks one of properties from the schedule, the property's either classTime or restTime
+					window[target] = parseInt(words[++index]);
+				}
+				else {
+					for(var day = 0;day < 7;day++) {
+						week[day][target] = parseInt(words[++index]);	
 					}
-					index += 2;
 				}
-				break;
-			case "lunchURL":
-				lunchURL = words[++index];
-				console.log(lunchURL);
-				break;
-			case "backgrounds":
-				index++;
-				while(words[index] != "end") {
-					backgroundList.push(new Background(words[index], words[index + 1], words[index + 2]));
-					index += 3;
+				index++; //Move to next target.
+			}
+			break;
+		case "timetable":
+			index += 2; //Jump to the first subject(or "end" if there is no subject on the first day(sunday)).
+			for(var day = 0;day < 7;day++) {
+				while(words[index] != "end") { //Save the subjects of a day of the week.
+					week[day].subjects.push(words[index]);
+					index++;
 				}
-				//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
-				backgroundNum = backgroundList.length - 1;
-				changeBackground();
-				break;
+				index += 2;
+			}
+			break;
+		case "lunchURL":
+			lunchURL = words[++index];
+			break;
+		case "backgrounds":
+			index++;
+			while(words[index] != "end") {
+				backgroundList.push(new Background(words[index], words[index + 1], words[index + 2]));
+				index += 3;
+			}
+			//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
+			backgroundNum = backgroundList.length - 1;
+			changeBackground();
+			break;
 		}
 	}
 });
-//Construct dayWeek objects
-for(var i  = 0;i < 7;i++) {
-	week.push(new dayWeek(weekNames[i], startTimes[i], lunchTimes[i], lunchStarts[i], subjects[i]));
-}
 getLunchData(function(menu) {lunchMenu.innerHTML = makeLunchString(menu);}); //Fetch the lunch menu and display it.
 //Update the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
 timetable.innerHTML = makeTimetableString(week[initDay], 2100000000);

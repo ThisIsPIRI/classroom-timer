@@ -19,7 +19,6 @@ const getLunchData = function(callback) { //Pass a function as callback to recei
 			at = rawMenu.charAt(i);
 			if(at === 'd') { //the end of today's <div> reached. 
 				callback(menu);
-				console.log(menu);
 				return;
 			}
 			else if((!isNaN(parseFloat(at)) || at === '<') && readingName) {
