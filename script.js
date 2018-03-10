@@ -22,7 +22,7 @@ const lunchMenu = document.getElementById("lunchMenu"), totalTime = document.get
 const weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
 var inFreetime = undefined;
 const minute1 = new Audio("1minute.mp3"), classStarted = new Audio("classStarted.mp3");
-var week = [];
+var week = []; //Where all day-specific information is stored
 
 //day : a dayWeek object as arguments
 const makeTimetableString = function(day, nextTime) {
