@@ -1,5 +1,5 @@
 ﻿schedule
-startTime 0 32400 31800 31200 31800 31800 40000
+startTime 35000 32400 31800 31200 31800 31800 40000
 lunchTime 0 3000 3000 2400 3000 3000 0
 lunchStart 0 3 3 3 3 3 0
 classTime 2700
@@ -7,13 +7,13 @@ restTime 600
 end
 
 timetable
-sunday end
+sunday 일1 일2 일3 일4 일5 end
 monday 월1 월2 월3 월4 월5 월6 end
 tuesday 화1 화2 화3 화4 화5 end
 wednesday 수1 수2 수3 end
 thursday 목1 목2 목3 목4 목5 목6 목7 end
 friday 금1 금2 금3 금4 금5 금6 금7 금8 금9 금10 금11 end
-saturday 토1 토2 토3 토4 토5 토6 토7 토8 토9 토10 토11 토12 토13 토14 토15 토16 토17 토18 토19 토20 토21 end
+saturday end
 end
 
 lunchURL

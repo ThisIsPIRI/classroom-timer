@@ -126,8 +126,7 @@ for(var i  = 0;i < 7;i++) {
 }
 
 fileReader.read("data.txt", function(data) {
-	data = data.replace(/\n/g, " "); //Replace newlines with spaces
-	var words = data.split(" ").map(function(word) {return word.trim();}); //Separate each words and remove preceding and trailing whitespaces.
+	const words = fileReader.getTokensFrom(data);
 	for(var index = 0;index < words.length;index++) { //Parse the file. Warning: index is modified inside the loop.
 		switch(words[index]) {
 		case "schedule":
