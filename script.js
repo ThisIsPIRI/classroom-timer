@@ -5,7 +5,7 @@ const temporarySubject = ["1", "2", "3", "4", "5"];
 const temporaryClass = 5, temporaryRest = 5;*/
 
 //day information constructor
-function dayWeek(n, start, lun, lunStart, sub) {
+function DayWeek(n, start, lun, lunStart, sub) {
 	this.name = n;
 	//No optional arguments; we have to support IEs.
 	this.startTime = start !== undefined ? start : 0;
@@ -21,10 +21,9 @@ const lunchMenu = document.getElementById("lunchMenu"), totalTime = document.get
 //other global variables
 const weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
 var inFreetime = undefined;
-const minute1 = new Audio("1minute.mp3"), classStarted = new Audio("classStarted.mp3");
 var week = []; //Where all day-specific information is stored
 
-//day : a dayWeek object as arguments
+//day is a DayWeek object
 const makeTimetableString = function(day, nextTime) {
 	var tableString = "";
 	for(var i = 0;i < day.subjects.length;i++) {
@@ -120,9 +119,9 @@ const dayUpdate = function() {
 };
 dayUpdate();
 
-//Construct dayWeek objects. Other properties will be assigned below while parsing.
+//Construct DayWeek objects. Other properties will be assigned below while parsing.
 for(var i  = 0;i < 7;i++) {
-	week.push(new dayWeek(weekNames[i]));
+	week.push(new DayWeek(weekNames[i]));
 }
 
 fileReader.read("data.txt", function(data) {
@@ -133,7 +132,7 @@ fileReader.read("data.txt", function(data) {
 			index++;
 			while(words[index] !== "end") {
 				var target = words[index]; //startTime, lunchTime, etc.
-				if(week[0][target] === undefined) { //If a dayWeek object lacks one of properties from the schedule, the property's either classTime or restTime
+				if(week[0][target] === undefined) { //If a DayWeek object lacks one of properties from the schedule, the property's either classTime or restTime
 					window[target] = parseInt(words[++index]);
 				}
 				else {
