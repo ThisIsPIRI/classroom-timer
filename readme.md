@@ -6,7 +6,7 @@ A web-based timer for classrooms. May not be accurate or up-to-date. Use with Ch
 - Play sound some time before the class/recess starts. Unfortunately, no sound is included; you have to insert your own.
 
 ## Dependencies
-Requires rainbow.js, sound.js and file.js from [my JS Library](https://github.com/busyVision/js-library). Put them in lib directory.
+Requires rainbow.js and file.js from [my JS Library](https://github.com/ThisIsPIRI/js-library). Put them in lib directory.
 
 ## The format
 When you're writing data files for the timer, you have to follow a certain format. The file consists of 4 sections: schedule, timetable, lunchURL and backgrounds. A literal 'end' MUST be the last token of a section. The order of the sections doesn't matter. You can use either spaces or newlines to separate tokens. Comments can be written outside of the 4 main sections.

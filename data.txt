@@ -1,8 +1,8 @@
 ﻿schedule
 timeUnit minutes
-startTime 0 500 500 500 500 500 600
+startTime 0 500 500 500 500 500 1000
 lunchTime 0 40 40 40 40 40 0
-lunchStart 0 3 3 3 3 3 0
+lunchStart 0 3 3 3 3 3 3
 classTime 50 50 50 50 50 50 50 50 50 50 50 end
 restTime 10 10 10 10 10 10 10 10 10 10 10 end
 bellError 0

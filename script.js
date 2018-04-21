@@ -1,9 +1,4 @@
-//testing
-/*const tempDate = new Date();
-const temporaryStart = tempDate.getHours() * 60 * 60 + tempDate.getMinutes() * 60 + tempDate.getSeconds() + 5, temporaryLunch = 10, temporaryLunchStart = 3;
-const temporarySubject = ["1", "2", "3", "4", "5"];
-const temporaryClass = 5, temporaryRest = 5;*/
-
+//TODO: refactor into a class(not necessarily an ES6 class)
 //day information constructor
 function DayWeek(n, start, lun, lunStart, sub) {
 	this.name = n;
@@ -23,7 +18,18 @@ const weekNames = ["일요일", "월요일", "화요일", "수요일", "목요�
 var inFreetime = undefined;
 const week = []; //Where all day-specific information is stored
 var classTime = [], restTime = []; //Not const because they have to be a property of window
+var totalPhysicalTime = NaN; //The total duration of school in the day
 
+
+var initDay;
+const dayUpdate = function() {
+	var initDate = new Date();
+	initDay = initDate.getDay();
+	date.innerHTML = initDate.getFullYear() + "년 " + (initDate.getMonth() + 1) + "월 " + initDate.getDate() + "일 " + weekNames[initDay];
+	//Update the total time only if week has been initialized. If not, it will be updated after week gets initialized.
+	if(week[initDay] != undefined) totalPhysicalTime = getTotalTime(initDay);
+	//setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - initDate.getMilliseconds()); Moved to update()
+};
 //day is a DayWeek object
 const makeTimetableString = function(day, nextTime) {
 	var tableString = "";
@@ -46,26 +52,61 @@ const freeOrClassUpdate = function(day, nextTime) {
 	if(inFreetime) subject.innerHTML = "다음 시간은 " + week[day].subjects[nextTime] + " 시간입니다.";
 	else subject.innerHTML = "지금은 " + week[day].subjects[nextTime] + " 시간입니다.";
 };
+
+/**Returns the school time(as opposed to physical time) that (will have/had) passed at the start of (before)th recess-class pair.
+ * @param {integer} before - The recess-class pair until the start of which you want to get the time.*/
+const getSchoolTime = function(before) {
+	var sum  = 0;
+	for(var i = 0;i < before;i++) {
+		sum += restTime[i] + classTime[i];
+	}
+	return sum;
+};
+const getTotalTime = function(day) {
+	return week[day].startTime + week[day].lunchTime + getSchoolTime(week[day].subjects.length);
+};
+
+/**Returns the 0-based index of the next class at the given schoolTime AND the school time at which that class starts
+ * in an Object as fields "index" and "startsAt".
+ * Note that if schoolTime is inside a class, it will return the index of that class, and not the class next of it.
+ * @param {integer} schoolTime - The school time for which you want to get the next class of.
+ * @param {integer} day - The day in which to calculate the next class.*/
+const getNextTime = function(schoolTime, day) {
+	//Start from restTime[0] instead of 0 because Math.floor(-1 / 2) === 0
+	if(schoolTime <= restTime[0]) return {index: 0, startsAt: restTime[0]};
+	var sum = restTime[0], i;
+	for(i = 1;i < week[day].subjects.length * 2;i++) {
+		if(i % 2 === 0) sum += restTime[Math.floor(i / 2)]; //The first recess comes before the first class.
+		else sum += classTime[Math.floor(i / 2)];
+		if(sum > schoolTime) break;
+	}
+	//Since we're calculating the time THIS class starts if we're currently in a class(in other words, i % 2 !== 0 at the end),
+	//we have to subtract the duration of this class from sum; it would point to the start of the next RECESS without doing so.
+	return {index: Math.floor(i / 2), startsAt: i % 2 === 0 ? sum : sum - classTime[Math.floor(i / 2)]};
+};
+
 //main update function called every second
 const update = function() {
-	//time update
+	//Get the current time
 	var now = new Date();
 	var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds(), day = now.getDay();
 	time.innerHTML = h + "시 " + m + "분 " + s + "초";
+	if(day !== initDay) dayUpdate();
 
-	//variables update
+	//Core calculations
 	var physicalTime = ((h * 60 * 60) + (m * 60) + s) + bellError;
 	var schoolTime = physicalTime - week[day].startTime;
-	var schoolLunchStart = (classTime + restTime) * (week[day].lunchStart + 1);
+	var schoolLunchStart = getSchoolTime(week[day].lunchStart + 1);
 	if(schoolTime > schoolLunchStart) schoolTime -= Math.min((schoolTime - schoolLunchStart), week[day].lunchTime);
-	var nextTime = Math.max(0, parseInt(schoolTime / (classTime + restTime)));
-	var nextStartTime = (classTime + restTime) * (nextTime) + week[day].startTime + restTime;
-	if(nextTime > week[day].lunchStart)
+	var nextTime = getNextTime(schoolTime, day);
+	var nextIndex = nextTime.index;
+	var nextStartTime = nextTime.startsAt + week[day].startTime;
+	if(nextIndex > week[day].lunchStart)
 		nextStartTime += week[day].lunchTime;
 	var remain = nextStartTime - physicalTime;
 	
 	//Check if all classes are finished
-	if(week[day].subjects[nextTime] === undefined) {
+	if(week[day].subjects[nextIndex] === undefined) {
 		subject.innerHTML = "모든 수업이 끝났습니다.";
 		remaining.innerHTML = "";
 		totalTime.innerHTML = "";
@@ -77,7 +118,7 @@ const update = function() {
 	//freetime/class time switch
 	if((remain >= 0) != inFreetime) { //When remain is positive or 0, it's freetime. Otherwise, it's class time.
 		inFreetime = remain >= 0;
-		freeOrClassUpdate(day, nextTime);
+		freeOrClassUpdate(day, nextIndex);
 	}
 	
 	//remaining time update
@@ -88,36 +129,25 @@ const update = function() {
 	}
 	else {
 		remainString = "수업 종료까지 ";
-		displayedRemainTime = classTime + remain; //The remaining seconds for this class. Since remain === -(All seconds from the start of this class), we add remain to classTime.
+		displayedRemainTime = classTime[nextIndex] + remain; //The remaining seconds for this class. Since remain === -(All seconds from the start of this class), we add remain to classTime.
 	}
 	if(displayedRemainTime >= 60)
-		remaining.innerHTML = remainString + parseInt(displayedRemainTime / 60) + "분 " + (displayedRemainTime % 60) + "초 남았습니다.";
+		remaining.innerHTML = remainString + Math.floor(displayedRemainTime / 60) + "분 " + (displayedRemainTime % 60) + "초 남았습니다.";
 	else
 		remaining.innerHTML = remainString + displayedRemainTime + "초 남았습니다.";
 	
 	//remaining total time update
-	var end = week[day].startTime + week[day].lunchTime + week[day].subjects.length * (classTime + restTime) - physicalTime;
-	totalTime.innerHTML = "일정 종료까지 <br>" + parseInt(end / 3600) + "시간 " + parseInt(end % 3600 / 60) + "분 " + end % 60 + "초";
-
-	//play sounds. TODO: replace with a list of playing times traversed sequentially
-	if(remain === 120) sound.repeat(sound.beep, 2);
-	if(remain === 61) minute1.play();
-	if(remain === 0) classStarted.play();
+	var end = totalPhysicalTime - physicalTime;
+	totalTime.innerHTML = "일정 종료까지 <br>" + Math.floor(end / 3600) + "시간 " + Math.floor(end % 3600 / 60) + "분 " + end % 60 + "초";
 	
 	//gray out the lunch menu after the lunchtime
-	if((week[day].startTime + (week[day].lunchStart + 1) * (classTime + restTime) + week[day].lunchTime / 3) - physicalTime < 0)
+	if((week[day].startTime + getSchoolTime(week[day].lunchStart + 1) + week[day].lunchTime / 3) - physicalTime < 0)
 		lunchMenu.style.color = backgroundList[backgroundNum].disabledColor;
 	
 	//debug
-	//console.log("nextTime : " + nextTime + ", nextStartTime : " + nextStartTime + ", remain : " + remain + ", displayedRemainTime : " + displayedRemainTime);
+	//console.log("nextIndex : " + nextIndex + ", nextStartTime : " + nextStartTime + ", remain : " + remain + ", displayedRemainTime : " + displayedRemainTime);
 };
-var initDay;
-const dayUpdate = function() {
-	var initDate = new Date();
-	initDay = initDate.getDay();
-	date.innerHTML = initDate.getFullYear() + "년 " + (initDate.getMonth() + 1) + "월 " + initDate.getDate() + "일 " + weekNames[initDay];
-	setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - initDate.getMilliseconds());
-};
+
 dayUpdate();
 
 //Construct DayWeek objects. Other properties will be assigned below while parsing.
@@ -136,20 +166,19 @@ fileReader.read("data.txt", function(data) {
 			while(words[index] !== "end") {
 				var target = words[index]; //startTime, lunchTime, etc.
 				if(week[0][target] !== undefined) { //The property has one scalar per DayWeek(startTime, lunchTime, lunchStart)
-					console.log("week, target : " + target);
 					for(var day = 0;day < 7;day++) {
 						week[day][target] = parseInt(words[++index]);
 						if(unitMin) week[day][target] *= 60;
 					}
 				}
 				else if(Array.isArray(window[target])) { //The property is an array(classTime, restTime)
-					console.log("array, target : " + target);
+					index++;
 					while(words[index] != "end") {
-						window[target].push(parseInt(words[++index]));
+						window[target].push(parseInt(words[index++]));
+						if(unitMin) window[target][window[target].length - 1] *= 60;
 					}
 				}
 				else { //The property is a scalar(bellError)
-					console.log("scalar, target : " + target);
 					window[target] = parseInt(words[++index]);
 					if(unitMin && target !== "bellError") window[target] *= 60; //Multiply by 60 to convert to seconds
 				}
@@ -183,6 +212,15 @@ fileReader.read("data.txt", function(data) {
 			break;
 		}
 	}
+	//DEBUG
+	const tempDate = new Date();
+	week[initDay].startTime = tempDate.getHours() * 60 * 60 + tempDate.getMinutes() * 60 + tempDate.getSeconds() + 5
+	week[initDay].lunchTime = 10;
+	week[initDay].lunchStart = 3;
+	week[initDay].subjects = ["1", "2", "3", "4", "5"];
+	classTime = [5, 5, 5, 5, 5], restTime = [5, 5, 5, 5, 5];
+	
+	totalPhysicalTime = getTotalTime(initDay);
 });
 //getLunchData(function(menu) {lunchMenu.innerHTML = makeLunchString(menu);}); //Fetch the lunch menu and display it.
 //Update the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
