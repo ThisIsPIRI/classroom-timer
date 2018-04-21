@@ -18,7 +18,7 @@ friday 금1 금2 금3 금4 금5 금6 end
 saturday 토1 토2 토3 토4 토5 토6 토7 토8 토9 토10 end
 end
 
-lunchURL
+menuURL
 http://stu.sen.go.kr/sts_sci_md00_001.do?schulCode=B100000456&schulCrseScCode=3&SchulKndScCode=04&schYm=
 end
 

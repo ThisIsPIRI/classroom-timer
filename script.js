@@ -12,13 +12,16 @@ function DayWeek(n, start, lun, lunStart, sub) {
 //elements
 const date = document.getElementById("date"), time = document.getElementById("time"), subject = document.getElementById("subject");
 const remaining = document.getElementById("remaining"), timetable = document.getElementById("timetable");
-const lunchMenu = document.getElementById("lunchMenu"), totalTime = document.getElementById("totalTime");
+const menuText = document.getElementById("menuText"), totalTime = document.getElementById("totalTime");
 //other global variables
 const weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
 var inFreetime = undefined;
 const week = []; //Where all day-specific information is stored
 var classTime = [], restTime = []; //Not const because they have to be a property of window
+var bellError = 0;
 var totalPhysicalTime = NaN; //The total duration of school in the day
+var menuURL = ""; //The URL to fetch the menus from
+var backgroundNum = 0;
 
 
 var initDay;
@@ -110,7 +113,7 @@ const update = function() {
 		subject.innerHTML = "모든 수업이 끝났습니다.";
 		remaining.innerHTML = "";
 		totalTime.innerHTML = "";
-		lunchMenu.innerHTML = "";
+		menuText.innerHTML = "";
 		rainbow.stopAll();
 		return;
 	}
@@ -142,7 +145,7 @@ const update = function() {
 	
 	//gray out the lunch menu after the lunchtime
 	if((week[day].startTime + getSchoolTime(week[day].lunchStart + 1) + week[day].lunchTime / 3) - physicalTime < 0)
-		lunchMenu.style.color = backgroundList[backgroundNum].disabledColor;
+		menuText.style.color = backgroundList[backgroundNum].disabledColor;
 	
 	//debug
 	//console.log("nextIndex : " + nextIndex + ", nextStartTime : " + nextStartTime + ", remain : " + remain + ", displayedRemainTime : " + displayedRemainTime);
@@ -196,8 +199,8 @@ fileReader.read("data.txt", function(data) {
 			}
 			break;
 			
-		case "lunchURL":
-			lunchURL = words[++index];
+		case "menuURL":
+			menuURL = words[++index];
 			break;
 			
 		case "backgrounds":
@@ -221,8 +224,8 @@ fileReader.read("data.txt", function(data) {
 	classTime = [5, 5, 5, 5, 5], restTime = [5, 5, 5, 5, 5];
 	
 	totalPhysicalTime = getTotalTime(initDay);
+	getMenuData(menuURL, function(menu) {menuText.innerHTML = makeMenuString(menu);}); //Fetch the lunch menu and display it.
 });
-//getLunchData(function(menu) {lunchMenu.innerHTML = makeLunchString(menu);}); //Fetch the lunch menu and display it.
 //Update the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
 timetable.innerHTML = makeTimetableString(week[initDay], 2100000000);
 //Register the interval

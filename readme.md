@@ -35,8 +35,8 @@ One important thing to note is that theoretically, every class has a preceding r
 ### timetable
 Under timetable, you put the names of the 7 days, the names of the subjects in each days after them, and one 'end' in the end of each days. The spelling of the days doesn't matter, but they MUST have one 'end' at the end of their lines; this is because the number of subjects is variable. Put an 'end' at the end of the section, too.
 
-### lunchURL
-lunchURL is simple; write lunchURL, the URL to fetch the menu from, and the necessary 'end'.
+### menuURL
+menuURL is simple: write menuURL, the URL to fetch the menu from(including the protocol - http://), and the necessary 'end'.
 
 ### backgrounds
 Under the last section, backgrounds, you write the name of the background image, the color of texts when they are enabled over the background, and the color of them when they're disabled. The file must be in the same directory as the HTML. For the colors, you can use anything CSS accepts: color names, rgb or hsl for example. Since spaces separate tokens in this file, one color or filename MUST NOT contain any spaces. Example: rgb(255, 255, 255) cannot be used, while rgb(255,255,255) can. Don't write semicolons at the end of them. When you're finished, don't forget to put an 'end' at the end.

@@ -1,6 +1,6 @@
 body {
 	color:white;
-	background:url("background2.png") no-repeat center center fixed;
+	background:url("black.png") no-repeat center center fixed;
 	background-size:cover;
 	height:100%;
 	width:100%;
@@ -9,12 +9,12 @@ body {
 	font-family:batang;
 }
 article {
-	font-size:320%;	
+	font-size:320%;
 }
-#lunchMenu,#totalTime {
+#menuText,#totalTime {
 	position:absolute;
 }
-#lunchMenu {
+#menuText {
 	font-size:70%;
 	left:10px;
 	top:60px;
