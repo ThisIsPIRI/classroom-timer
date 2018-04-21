@@ -21,7 +21,8 @@ const lunchMenu = document.getElementById("lunchMenu"), totalTime = document.get
 //other global variables
 const weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
 var inFreetime = undefined;
-var week = []; //Where all day-specific information is stored
+const week = []; //Where all day-specific information is stored
+var classTime = [], restTime = []; //Not const because they have to be a property of window
 
 //day is a DayWeek object
 const makeTimetableString = function(day, nextTime) {
@@ -53,7 +54,7 @@ const update = function() {
 	time.innerHTML = h + "시 " + m + "분 " + s + "초";
 
 	//variables update
-	var physicalTime = ((h * 60 * 60) + (m * 60) + s) + 4 //constant difference from the bell
+	var physicalTime = ((h * 60 * 60) + (m * 60) + s) + bellError;
 	var schoolTime = physicalTime - week[day].startTime;
 	var schoolLunchStart = (classTime + restTime) * (week[day].lunchStart + 1);
 	if(schoolTime > schoolLunchStart) schoolTime -= Math.min((schoolTime - schoolLunchStart), week[day].lunchTime);
@@ -129,33 +130,47 @@ fileReader.read("data.txt", function(data) {
 	for(var index = 0;index < words.length;index++) { //Parse the file. Warning: index is modified inside the loop.
 		switch(words[index]) {
 		case "schedule":
-			index++;
+			index += 2; //Skip "timeUnit"
+			var unitChar = words[index++];
+			var unitMin = unitChar === 'M' || unitChar === "minutes";
 			while(words[index] !== "end") {
 				var target = words[index]; //startTime, lunchTime, etc.
-				if(week[0][target] === undefined) { //If a DayWeek object lacks one of properties from the schedule, the property's either classTime or restTime
-					window[target] = parseInt(words[++index]);
-				}
-				else {
+				if(week[0][target] !== undefined) { //The property has one scalar per DayWeek(startTime, lunchTime, lunchStart)
+					console.log("week, target : " + target);
 					for(var day = 0;day < 7;day++) {
-						week[day][target] = parseInt(words[++index]);	
+						week[day][target] = parseInt(words[++index]);
+						if(unitMin) week[day][target] *= 60;
 					}
+				}
+				else if(Array.isArray(window[target])) { //The property is an array(classTime, restTime)
+					console.log("array, target : " + target);
+					while(words[index] != "end") {
+						window[target].push(parseInt(words[++index]));
+					}
+				}
+				else { //The property is a scalar(bellError)
+					console.log("scalar, target : " + target);
+					window[target] = parseInt(words[++index]);
+					if(unitMin && target !== "bellError") window[target] *= 60; //Multiply by 60 to convert to seconds
 				}
 				index++; //Move to next target.
 			}
 			break;
+			
 		case "timetable":
 			index += 2; //Jump to the first subject(or "end" if there is no subject on the first day(sunday)).
 			for(var day = 0;day < 7;day++) {
 				while(words[index] != "end") { //Save the subjects of a day of the week.
-					week[day].subjects.push(words[index]);
-					index++;
+					week[day].subjects.push(words[index++]);
 				}
 				index += 2;
 			}
 			break;
+			
 		case "lunchURL":
 			lunchURL = words[++index];
 			break;
+			
 		case "backgrounds":
 			index++;
 			while(words[index] != "end") {
@@ -169,7 +184,7 @@ fileReader.read("data.txt", function(data) {
 		}
 	}
 });
-getLunchData(function(menu) {lunchMenu.innerHTML = makeLunchString(menu);}); //Fetch the lunch menu and display it.
+//getLunchData(function(menu) {lunchMenu.innerHTML = makeLunchString(menu);}); //Fetch the lunch menu and display it.
 //Update the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
 timetable.innerHTML = makeTimetableString(week[initDay], 2100000000);
 //Register the interval
