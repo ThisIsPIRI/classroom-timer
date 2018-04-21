@@ -1,3 +1,8 @@
+const MenuType = Object.freeze({
+	LUNCH: 0,
+	DINNER: 1
+});
+
 const makeMenuString = function(menuStrings) {
 	var result = "";
 	for(var i = 0;i < menuStrings.length;i++) {
@@ -5,18 +10,22 @@ const makeMenuString = function(menuStrings) {
 	}
 	return result;
 }
-//AJAX
-const getMenuData = function(menuURL, callback) { //Pass a function as callback to receive the menus as Strings in an array.
+
+const getMenuData = function(menuURL, menuType, callback) { //Pass a function as callback to receive the menus as Strings in an array.
 	const request = new XMLHttpRequest();
-	const lunchDate = new Date();
+	const menuDate = new Date();
 	request.onload = function() {
 		var rawMenu = request.responseText;
-		//parse the result
-		var i = rawMenu.indexOf("]", rawMenu.indexOf(lunchDate.getDate() + "<br />[중식]", 20000)); //Start from the end of "[중식]" of today
+		//Go to the start of today's menu
+		var i = rawMenu.indexOf(']', rawMenu.indexOf(menuDate.getDate() + 1 + "<br />[중식]", 20000)); //Start from the end of "[중식]" of today
+		if(menuType === MenuType.DINNER) i = rawMenu.indexOf(']', rawMenu.indexOf("[석식]", i)) //Start from "[석식]" if parsing a dinner
+			
 		var buffer = "", readingName = false, menu = [], at = ' ';
 		while(at !== "") {
 			at = rawMenu.charAt(i);
-			if(at === 'd') { //the end of today's <div> reached. 
+			//If parsing a lunch, stop at [석식] or </div>. if dinner is unavailable that day.
+			//If parsing a dinner, stop at </div>, which marks the end of the menu for a day.
+			if((at === '[' && menuType === MenuType.LUNCH) || at === 'd') {
 				callback(menu);
 				return;
 			}
@@ -30,7 +39,6 @@ const getMenuData = function(menuURL, callback) { //Pass a function as callback 
 			i++;
 		}
 	}
-	request.open("GET", menuURL + lunchDate.getFullYear() + ("0" + (lunchDate.getMonth() + 1)).slice(-2), true);
+	request.open("GET", menuURL + menuDate.getFullYear() + ("0" + (menuDate.getMonth() + 1)).slice(-2), true);
 	request.send();
 }
-//TODO make getDinnerData() or refactor above to getMenuData() and make it accept the form of the meal.

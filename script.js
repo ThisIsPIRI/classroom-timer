@@ -224,7 +224,9 @@ fileReader.read("data.txt", function(data) {
 	classTime = [5, 5, 5, 5, 5], restTime = [5, 5, 5, 5, 5];
 	
 	totalPhysicalTime = getTotalTime(initDay);
-	getMenuData(menuURL, function(menu) {menuText.innerHTML = makeMenuString(menu);}); //Fetch the lunch menu and display it.
+	getMenuData(menuURL, MenuType.LUNCH, function(menu) {
+		menuText.innerHTML = makeMenuString(menu);
+	}); //Fetch the lunch menu and display it.
 });
 //Update the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
 timetable.innerHTML = makeTimetableString(week[initDay], 2100000000);
