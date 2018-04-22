@@ -2,7 +2,7 @@
 //day information constructor
 function DayWeek(n, start, lun, lunStart, sub) {
 	this.name = n;
-	//No optional arguments; we have to support IEs.
+	//No optional arguments; we might have to support IEs.
 	this.startTime = start !== undefined ? start : 0;
 	this.subjects = sub !== undefined ? sub : [];
 	this.lunchTime = lun !== undefined ? lun : 0;
@@ -20,18 +20,30 @@ const week = []; //Where all day-specific information is stored
 var classTime = [], restTime = []; //Not const because they have to be a property of window
 var bellError = 0;
 var totalPhysicalTime = NaN; //The total duration of school in the day
-var menuURL = ""; //The URL to fetch the menus from
+var menuURL = null; //The URL to fetch the menus from
 var backgroundNum = 0;
+var rawMenuCache = "";
+var lunchMenu = [], dinnerMenu = [];
 
-
-var initDay;
+/**Updates variables after a change in the current day. Must be called AFTER fileReader callback.*/
 const dayUpdate = function() {
 	var initDate = new Date();
-	initDay = initDate.getDay();
+	var initDay = initDate.getDay();
 	date.innerHTML = initDate.getFullYear() + "년 " + (initDate.getMonth() + 1) + "월 " + initDate.getDate() + "일 " + weekNames[initDay];
 	//Update the total time only if week has been initialized. If not, it will be updated after week gets initialized.
 	if(week[initDay] != undefined) totalPhysicalTime = getTotalTime(initDay);
-	//setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - initDate.getMilliseconds()); Moved to update()
+
+	totalPhysicalTime = getTotalTime(initDay);
+	//Cache and update the menu.
+	lunchMenu = parseRawMenu(rawMenuCache, initDay, MenuType.LUNCH);
+	dinnerMenu = parseRawMenu(rawMenuCache, initDay, MenuType.DINNER);
+	menuText.innerHTML = makeMenuString(lunchMenu);
+	//Make the menu visible again, in case it was greyed out.
+	menuText.style.color = backgroundList[backgroundNum].enabledColor;
+	//Update the timetable.
+	freeOrClassUpdate(initDay, 0);
+	//Schedule next update.
+	setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - initDate.getMilliseconds());
 };
 //day is a DayWeek object
 const makeTimetableString = function(day, nextTime) {
@@ -94,7 +106,6 @@ const update = function() {
 	var now = new Date();
 	var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds(), day = now.getDay();
 	time.innerHTML = h + "시 " + m + "분 " + s + "초";
-	if(day !== initDay) dayUpdate();
 
 	//Core calculations
 	var physicalTime = ((h * 60 * 60) + (m * 60) + s) + bellError;
@@ -118,8 +129,8 @@ const update = function() {
 		return;
 	}
 	
-	//freetime/class time switch
-	if((remain >= 0) != inFreetime) { //When remain is positive or 0, it's freetime. Otherwise, it's class time.
+	//recess/class time switch
+	if((remain >= 0) != inFreetime) { //When remain is positive or 0, it's recess. Otherwise, it's class time.
 		inFreetime = remain >= 0;
 		freeOrClassUpdate(day, nextIndex);
 	}
@@ -132,7 +143,8 @@ const update = function() {
 	}
 	else {
 		remainString = "수업 종료까지 ";
-		displayedRemainTime = classTime[nextIndex] + remain; //The remaining seconds for this class. Since remain === -(All seconds from the start of this class), we add remain to classTime.
+		//The remaining seconds for this class. Since remain === -(All seconds from the start of this class), we add remain to classTime.
+		displayedRemainTime = classTime[nextIndex] + remain;
 	}
 	if(displayedRemainTime >= 60)
 		remaining.innerHTML = remainString + Math.floor(displayedRemainTime / 60) + "분 " + (displayedRemainTime % 60) + "초 남았습니다.";
@@ -143,21 +155,23 @@ const update = function() {
 	var end = totalPhysicalTime - physicalTime;
 	totalTime.innerHTML = "일정 종료까지 <br>" + Math.floor(end / 3600) + "시간 " + Math.floor(end % 3600 / 60) + "분 " + end % 60 + "초";
 	
-	//gray out the lunch menu after the lunchtime
-	if((week[day].startTime + getSchoolTime(week[day].lunchStart + 1) + week[day].lunchTime / 3) - physicalTime < 0)
-		menuText.style.color = backgroundList[backgroundNum].disabledColor;
+	//Change menuText to show the dinner after the lunchtime
+	//TODO: change to only execute once
+	if((week[day].startTime + getSchoolTime(week[day].lunchStart + 1) + week[day].lunchTime / 3) - physicalTime < 0) {
+		if(dinnerMenu.length <= 0) //There is no dinner. Grey out menuText.
+			menuText.style.color = backgroundList[backgroundNum].disabledColor;
+		else
+			menuText.innerHTML = makeMenuString(dinnerMenu);
+	}
 	
 	//debug
 	//console.log("nextIndex : " + nextIndex + ", nextStartTime : " + nextStartTime + ", remain : " + remain + ", displayedRemainTime : " + displayedRemainTime);
 };
 
-dayUpdate();
-
 //Construct DayWeek objects. Other properties will be assigned below while parsing.
 for(var i  = 0;i < 7;i++) {
 	week.push(new DayWeek(weekNames[i]));
 }
-
 fileReader.read("data.txt", function(data) {
 	const words = fileReader.getTokensFrom(data);
 	for(var index = 0;index < words.length;index++) { //Parse the file. Warning: index is modified inside the loop.
@@ -217,18 +231,19 @@ fileReader.read("data.txt", function(data) {
 	}
 	//DEBUG
 	const tempDate = new Date();
-	week[initDay].startTime = tempDate.getHours() * 60 * 60 + tempDate.getMinutes() * 60 + tempDate.getSeconds() + 5
-	week[initDay].lunchTime = 10;
-	week[initDay].lunchStart = 3;
-	week[initDay].subjects = ["1", "2", "3", "4", "5"];
+	const tempDay = tempDate.getDay();
+	week[tempDay].startTime = tempDate.getHours() * 60 * 60 + tempDate.getMinutes() * 60 + tempDate.getSeconds() + 5
+	week[tempDay].lunchTime = 10;
+	week[tempDay].lunchStart = 3;
+	week[tempDay].subjects = ["1", "2", "3", "4", "5"];
 	classTime = [5, 5, 5, 5, 5], restTime = [5, 5, 5, 5, 5];
 	
-	totalPhysicalTime = getTotalTime(initDay);
-	getMenuData(menuURL, MenuType.LUNCH, function(menu) {
-		menuText.innerHTML = makeMenuString(menu);
-	}); //Fetch the lunch menu and display it.
+	getMenuData(menuURL, function(menu) {
+		rawMenuCache = menu;
+		dayUpdate();
+	});
 });
-//Update the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
-timetable.innerHTML = makeTimetableString(week[initDay], 2100000000);
+//Empty the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
+timetable.innerHTML = "";
 //Register the interval
 setInterval(update, 1000);
