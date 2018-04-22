@@ -10,7 +10,7 @@ const MenuType = Object.freeze({
  * @returns {Array} An Array with all items in the menu as Strings. An empty Array if rawMenu was invalid.*/
 const parseRawMenu = function(rawMenu, day, menuType) {
 	//Go to the start of today's menu
-	var i = rawMenu.indexOf(']', rawMenu.indexOf(day + 1 + "<br />[중식]", 20000)); //Start from the end of "[중식]" of today
+	var i = rawMenu.indexOf(']', rawMenu.indexOf(day + "<br />[중식]", 20000)); //Start from the end of "[중식]" of today
 	if(menuType === MenuType.DINNER) i = rawMenu.indexOf(']', rawMenu.indexOf("[석식]", i)) //Start from "[석식]" if parsing a dinner
 		
 	var buffer = "", readingName = false, menu = [], at = ' ';

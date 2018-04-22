@@ -58,8 +58,8 @@ const dayUpdate = function() {
 	totalPhysicalTime = getTotalTime(initDay);
 	
 	//Cache and update the menu.
-	lunchMenu = parseRawMenu(rawMenuCache, initDay, MenuType.LUNCH);
-	dinnerMenu = parseRawMenu(rawMenuCache, initDay, MenuType.DINNER);
+	lunchMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.LUNCH);
+	dinnerMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.DINNER);
 	menuText.innerHTML = makeMenuString(lunchMenu);
 	
 	//Make the menu visible again, in case it was greyed out.
