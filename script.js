@@ -106,6 +106,7 @@ const getTotalTime = function(day) {
  * 0 if we're ahead of any Entry atTime. week[inday].entries.length if all Entries are finished atTime.*/
 const getEntry = function(inDay, atTime) {
 	const ent = week[inDay].entries; //Alias
+	if(ent.length <= 0) return 0; //No Entries today
 	if(atTime < ent[0].start) return 0; //Ahead of any Entry atTime
 	for(var i = 0;i < ent.length;i++) {
 		if(ent[i].start <= atTime && atTime < ent[i].end) return i;
@@ -151,7 +152,7 @@ const entryChanged = function(day, last, now, nowIndex) {
 		}
 		//Change menuText to show the dinner after the lunchtime
 		if(last.type === Entry.Type.MEAL) {
-			if(Array.isArray(dinnerMenu) && dinnerMenu.length <= 0) //There is no dinner. Grey out menuText.
+			if(!Array.isArray(dinnerMenu) || dinnerMenu.length <= 0) //There is no dinner. Grey out menuText.
 				menuText.style.color = backgroundList[backgroundNum].disabledColor;
 			else
 				menuText.innerHTML = makeMenuString(dinnerMenu);
