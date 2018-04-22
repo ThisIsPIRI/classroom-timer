@@ -85,19 +85,6 @@ const dayUpdate = function() {
 	dayUpdateTimeout = setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - initDate.getMilliseconds());
 };
 
-//day is a DayWeek object
-const makeTimetableString = function(day, nextTime) {
-	var tableString = "";
-	for(var i = 0;i < day.subjects.length;i++) {
-		if(i === nextTime) {
-			tableString += "<span id=\"current\">" + day.subjects[i] + "</span>, ";
-		}
-		else
-			tableString += day.subjects[i] + ", ";
-	}
-	return tableString.substr(0, tableString.length - 2);
-};
-
 //Called from update() when entering freetime or class time
 const freeOrClassUpdate = function(day, nextTime) {
 	//timetable update
@@ -221,7 +208,7 @@ fileReader.read("data.txt", function(data) {
 				if(week[0][target] !== undefined) { //The property has one scalar per DayWeek(startTime, lunchTime, lunchStart)
 					for(var day = 0;day < 7;day++) {
 						week[day][target] = parseInt(words[++index]);
-						if(unitMin) week[day][target] *= 60;
+						if(unitMin && target !== "lunchStart") week[day][target] *= 60;
 					}
 				}
 				else if(Array.isArray(window[target])) { //The property is an array(classTime, restTime)

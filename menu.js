@@ -3,15 +3,6 @@ const MenuType = Object.freeze({
 	DINNER: 1
 });
 
-const makeMenuString = function(menuStrings) {
-	if(!Array.isArray(menuStrings)) return "";
-	var result = "";
-	for(var i = 0;i < menuStrings.length;i++) {
-		result += menuStrings[i] + "<br>";
-	}
-	return result;
-}
-
 /**Parses the content of a menu webpage and returns all items in today's menu as a list.
  * @param {String} rawMenu - The content of the webpage to parse.
  * @param {integer} day - The day for which you want the menu.
