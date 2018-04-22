@@ -253,8 +253,15 @@ fileReader.read("data.txt", function(data) {
 		case "backgrounds":
 			index++;
 			while(words[index] != "end") {
-				backgroundList.push(new Background(words[index], words[index + 1], words[index + 2]));
+				const bg = new Background(words[index], words[index + 1], words[index + 2]);
 				index += 3;
+				//Read the author if there is one
+				if(words[index].toUpperCase() !== "NONE") {
+					bg.author = "";
+					while(words[index] !== "end") bg.author += words[index++] + ' ';
+				}
+				index++;
+				backgroundList.push(bg);
 			}
 			//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
 			backgroundNum = backgroundList.length - 1;

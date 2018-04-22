@@ -44,4 +44,8 @@ variables is where you fill 'var's in the timetable. Under "variables", write a 
 menuURL is simple: write menuURL, the URL to fetch the menu from(including the protocol - http://), and the necessary 'end'.
 
 ### backgrounds
-Under the last section, backgrounds, you write the name of the background image, the color of texts when they are enabled over the background, and the color of them when they're disabled. The file must be in the same directory as the HTML. For the colors, you can use anything CSS accepts: color names, rgb or hsl for example. Since spaces separate tokens in this file, one color or filename MUST NOT contain any spaces. Example: rgb(255, 255, 255) cannot be used, while rgb(255,255,255) can. Don't write semicolons at the end of them. When you're finished, don't forget to put an 'end' at the end.
+Under the last section, backgrounds, you write the name of the background image, the color of texts when they are enabled over the background, the color of them when they're disabled and the optional person/organization/whatever to credit the image to. The file must be in the same directory as the HTML.
+
+For the colors, you can use anything CSS accepts: color names, rgb or hsl for example. Since spaces separate tokens in this file, one color or filename MUST NOT contain any spaces. Example: rgb(255, 255, 255) cannot be used, while rgb(255,255,255) can. Don't write semicolons at the end of them.
+
+If you don't want to credit someone, write 'none' as the fourth word. Because of this, you can't use 'none' as the first word of the author. The case doesn't matter. Each background must have 'end' at the end, except when the author is 'none'. When you're finished, don't forget to put an 'end' at the end of the section, too.
