@@ -1,6 +1,6 @@
 ﻿schedule
 timeUnit minutes
-startTime 0 500 500 500 500 500 1000
+startTime 1200 500 500 500 500 500 1000
 lunchTime 0 40 40 40 40 40 0
 lunchStart 0 3 3 3 3 3 3
 classTime 50 50 50 50 50 50 50 50 50 50 50 end
@@ -9,13 +9,23 @@ bellError 0
 end
 
 timetable
-sunday 일1 일2 일3 일4 일5 end
+sunday 일1 일2 var var 일4 일5 end
 monday 월1 월2 월3 월4 월5 월6 end
 tuesday 화1 화2 화3 화4 화5 end
-wednesday 수1 수2 수3 end
+wednesday 수1 수2 수3 var end
 thursday 목1 목2 목3 목4 목5 목6 목7 end
-friday 금1 금2 금3 금4 금5 금6 end
+friday 금1 금2 금3 금4 금5 금6 var end
 saturday 토1 토2 토3 토4 토5 토6 토7 토8 토9 토10 end
+end
+
+variables
+15
+s2-0 s3-0
+w3-0
+f6-0
+s2-1 s3-1
+w3-1
+f6-1
 end
 
 menuURL

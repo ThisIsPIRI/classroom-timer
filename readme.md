@@ -9,10 +9,10 @@ A web-based timer for classrooms. May not be accurate or up-to-date. Use with Ch
 Requires rainbow.js and file.js from [my JS Library](https://github.com/ThisIsPIRI/js-library). Put them in lib directory.
 
 ## The format
-When you're writing data files for the timer, you have to follow a certain format. The file consists of 4 sections: schedule, timetable, lunchURL and backgrounds. A literal 'end' MUST be the last token of a section. The order of the sections doesn't matter. You can use either spaces or newlines to separate tokens. Comments can be written outside of the 4 main sections.
+When you're writing data files for the timer, you have to follow a certain format. The file consists of 4 sections: schedule, timetable, lunchURL and backgrounds. A literal 'end' MUST be the last token of a section. The order of the sections doesn't matter. You can use either spaces or newlines to separate tokens. Comments can be written outside of the 5 main sections.
 
 ### schedule
-Under schedule, you need 6 things:
+Under schedule, you need 7 things:
 
 - timeUnit, the unit of time used(M/minutes or S/seconds);
 - startTime, the time the first recess(before the first class) starts;
@@ -28,12 +28,17 @@ startTime, lunchTime and lunchStart must be followed by 7 integers, each for a d
 
 classTime and restTime must be followed by (max # of classes in a day - 1) integers, representing the duration of each classes and recesses BEFORE them. They must have an 'end' at the end.
 
-bellError is a single integer, and it must be in seconds, regardless of timeUnit.
+bellError is a single integer, and it must be in seconds, regardless of timeUnit. It is not essential and can be omitted, in which case it defaults to 0.
 
-One important thing to note is that theoretically, every class has a preceding recess. lunchTimes are not considered a recess; thus, you MUST subtract 10 minutes from lunch times to simulate recesses preceding the class after lunch(usually fifth). At the very end, put an 'end'.
+One important thing to note is that, theoretically, every class has a preceding recess. lunchTimes are not considered a recess; thus, you MUST subtract 10 minutes from lunch times to simulate recesses preceding the class after lunch(usually fifth). At the very end, put an 'end'.
 
 ### timetable
 Under timetable, you put the names of the 7 days, the names of the subjects in each days after them, and one 'end' in the end of each days. The spelling of the days doesn't matter, but they MUST have one 'end' at the end of their lines; this is because the number of subjects is variable. Put an 'end' at the end of the section, too.
+
+If the subject inside a slot varies each week, write a literal 'var' instead of a subject name and fill it below. The case of 'var' doesn't matter.
+
+### variables
+variables is where you fill 'var's in the timetable. Under "variables", write a number specifying the day of current month the list below starts. After that, start writing the subjects in ascending order of their days. This section isn't needed if you don't have any variable subject slots.
 
 ### menuURL
 menuURL is simple: write menuURL, the URL to fetch the menu from(including the protocol - http://), and the necessary 'end'.

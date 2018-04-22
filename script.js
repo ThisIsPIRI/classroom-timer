@@ -12,7 +12,7 @@ Entry.Type = Object.freeze({
 	MEAL : 2
 });
 /**The constructor for DayWeek Objects, containing everything about a day of the week.*/
-const DayWeek = function(n, start, lun, lunStart, sub, ent) {
+const DayWeek = function(n, start, lun, lunStart, sub, ent, vars) {
 	this.name = n;
 	//No optional arguments; we might have to support IEs.
 	this.startTime = start != undefined ? start : 0;
@@ -20,27 +20,28 @@ const DayWeek = function(n, start, lun, lunStart, sub, ent) {
 	this.entries = ent != undefined ? ent : [];
 	this.lunchTime = lun != undefined ? lun : 0;
 	this.lunchStart = lunStart != undefined ? lunStart : 0;
+	this.varSlots = vars != undefined ? vars : [];
 }
 
 //elements
 const date = document.getElementById("date"), time = document.getElementById("time"), subject = document.getElementById("subject");
 const remaining = document.getElementById("remaining"), timetable = document.getElementById("timetable");
 const menuText = document.getElementById("menuText"), totalTime = document.getElementById("totalTime");
-//State variables
+//State variables for update()
 var inFreetime = true; //Every day starts with a recess
 var lastEntry = null;
-var nextIndex = null;
-//other global variables
+//other variables
 const weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
 const week = []; //Where all day-specific information is stored
 var classTime = [], restTime = []; //Not const because they have to be a property of window
 var bellError = 0;
 var totalPhysicalTime = NaN; //The total duration of school in the day
 var menuURL = null; //The URL to fetch the menus from
-var backgroundNum = 0;
 var rawMenuCache = "";
 var lunchMenu = [], dinnerMenu = [];
 var dayUpdateTimeout = null;
+var varStart = 1;
+var varSubjects = [];
 
 /**Updates variables after a change in the current day. Must be called AFTER fileReader callback.*/
 const dayUpdate = function() {
@@ -63,6 +64,18 @@ const dayUpdate = function() {
 	
 	//Make the menu visible again, in case it was greyed out.
 	menuText.style.color = backgroundList[backgroundNum].enabledColor;
+	
+	//Fill today's variable subject slots.
+	var varDate = new Date(initDate.getFullYear(), initDate.getMonth());
+	var varDayOfMonth = initDate.getDate();
+	var sum = 0;
+	for(var i = varStart;i < varDayOfMonth;i++) {
+		varDate.setDate(i);
+		sum += week[varDate.getDay()].varSlots.length;
+	}
+	for(var i = 0;i < week[initDay].varSlots.length;i++, sum++) {
+		week[initDay].subjects[week[initDay].varSlots[i]] = varSubjects[sum];
+	}
 	
 	//Update the timetable.
 	freeOrClassUpdate(initDay, 0);
@@ -172,7 +185,7 @@ const update = function() {
 	const entry = week[day].entries[index];
 	//Handle changes in Entry
 	if(lastEntry !== entry) {
-		nextIndex = entryChanged(day, lastEntry, entry, index);
+		entryChanged(day, lastEntry, entry, index);
 		lastEntry = entry;
 	}
 	//Check if all Entries are finished
@@ -229,11 +242,21 @@ fileReader.read("data.txt", function(data) {
 		case "timetable":
 			index += 2; //Jump to the first subject(or "end" if there is no subject on the first day(sunday)).
 			for(var day = 0;day < 7;day++) {
+				var vsi = 0; //Variable slot index
 				while(words[index] != "end") { //Save the subjects of a day of the week.
-					week[day].subjects.push(words[index++]);
+					const subject = words[index++];
+					if(subject.toUpperCase() === "VAR") week[day].varSlots.push(vsi);
+					week[day].subjects.push(subject);
+					vsi++;
 				}
 				index += 2;
 			}
+			break;
+			
+		case "variables":
+			varStart = words[++index];
+			while(words[++index] !== "end")
+				varSubjects.push(words[index]);
 			break;
 			
 		case "menuURL":
@@ -253,13 +276,13 @@ fileReader.read("data.txt", function(data) {
 		}
 	}
 	//DEBUG
-	const tempDate = new Date();
+	/*const tempDate = new Date();
 	const tempDay = tempDate.getDay();
 	week[tempDay].startTime = tempDate.getHours() * 60 * 60 + tempDate.getMinutes() * 60 + tempDate.getSeconds() + 5
 	week[tempDay].lunchTime = 5;
 	week[tempDay].lunchStart = 3;
 	week[tempDay].subjects = ["1", "2", "3", "4", "5"];
-	classTime = [5, 5, 5, 5, 5], restTime = [5, 5, 5, 5, 5];
+	classTime = [5, 5, 5, 5, 5], restTime = [5, 5, 5, 5, 5];*/
 	
 	//Generate entries. They will be naturally sorted.
 	for(var day = 0;day < 7;day++) {
