@@ -4,17 +4,19 @@ const MenuType = Object.freeze({
 });
 
 const makeMenuString = function(menuStrings) {
+	if(!Array.isArray(menuStrings)) return "";
 	var result = "";
 	for(var i = 0;i < menuStrings.length;i++) {
 		result += menuStrings[i] + "<br>";
 	}
 	return result;
 }
+
 /**Parses the content of a menu webpage and returns all items in today's menu as a list.
  * @param {String} rawMenu - The content of the webpage to parse.
  * @param {integer} day - The day for which you want the menu.
  * @param {MenuType} menuType - The type of the menu to read.
- * @returns {Array} An Array with all items in the menu as Strings.*/
+ * @returns {Array} An Array with all items in the menu as Strings. An empty Array if rawMenu was invalid.*/
 const parseRawMenu = function(rawMenu, day, menuType) {
 	//Go to the start of today's menu
 	var i = rawMenu.indexOf(']', rawMenu.indexOf(day + 1 + "<br />[중식]", 20000)); //Start from the end of "[중식]" of today
@@ -37,7 +39,9 @@ const parseRawMenu = function(rawMenu, day, menuType) {
 		else if(readingName) buffer += at;
 		i++;
 	}
+	return menu; //Invalid rawMenu
 }
+
 /**Fetches a menu by means of AJAX and gives it to the callback as raw String containing the HTML.
  * @param menuURL {String} The URL to fetch the menu from.
  * @param callback {Function} The Function to call after the menu is acquired. One Array, containing all menu items as Strings, will be passed into it.*/
