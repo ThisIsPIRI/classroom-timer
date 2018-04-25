@@ -28,7 +28,7 @@ const date = document.getElementById("date"), time = document.getElementById("ti
 const remaining = document.getElementById("remaining"), timetable = document.getElementById("timetable");
 const menuText = document.getElementById("menuText"), totalTime = document.getElementById("totalTime");
 //State variables for update()
-var inFreetime = true; //Every day starts with a recess
+var inFreetime = null;
 var lastEntry = null;
 //other variables
 const weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
@@ -134,21 +134,17 @@ const entryChanged = function(day, last, now, nowIndex) {
 	var nextClass = nowIndex;
 	while(ent[nextClass].type !== Entry.Type.CLASS && nextClass < ent.length)
 		nextClass++;
+	inFreeTime = now.type !== Entry.Type.CLASS; //Set this manually every time; the timer may be started after the first recess.
 	if(last == null) {
 		freeOrClassUpdate(day, ent[nextClass].subIndex);
 	}
 	else {
 		//recess/class time switch
 		if(last.type !== now.type && (last.type === Entry.Type.CLASS || now.type === Entry.Type.CLASS)) {
-			if(now.type === Entry.Type.CLASS) {
-				inFreetime = false;
+			if(now.type === Entry.Type.CLASS)
 				freeOrClassUpdate(day, now.subIndex);
-			}
-			else {
-				inFreetime = true;
-				if(nextClass < ent.length) //If a class exists after now
-					freeOrClassUpdate(day, ent[nextClass].subIndex);
-			}
+			else if(nextClass < ent.length) //If a class exists after now
+				freeOrClassUpdate(day, ent[nextClass].subIndex);
 		}
 		//Change menuText to show the dinner after the lunchtime
 		if(last.type === Entry.Type.MEAL) {
