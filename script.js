@@ -42,6 +42,7 @@ var lunchMenu = [], dinnerMenu = [];
 var dayUpdateTimeout = null;
 var varStart = 1;
 var varSubjects = [];
+var cycleBackgrounds = false;
 
 /**Updates variables after a change in the current day. Must be called AFTER fileReader callback.*/
 const dayUpdate = function() {
@@ -79,6 +80,9 @@ const dayUpdate = function() {
 	
 	//Update the timetable.
 	freeOrClassUpdate(initDay, 0);
+	
+	//Reset the background if it is set to cycle.
+	if(cycleBackgrounds) setBackgroundTo(0);
 	
 	//Schedule next update.
 	if(dayUpdateTimeout != null) clearTimeout(dayUpdateTimeout);
@@ -192,6 +196,7 @@ const update = function() {
 for(var i  = 0;i < 7;i++) {
 	week.push(new DayWeek(weekNames[i]));
 }
+//TODO: use the parsing function below to make something that can convert current data.txt to JSON and remove it from here
 fileReader.read("data.txt", function(data) {
 	const words = fileReader.getTokensFrom(data);
 	for(var index = 0;index < words.length;index++) { //Parse the file. Warning: index is modified inside the loop.
@@ -259,6 +264,14 @@ fileReader.read("data.txt", function(data) {
 				}
 				index++;
 				backgroundList.push(bg);
+			}
+			if(words[++index] === "cycle") {
+				cycleBackgrounds = true;
+				index++;
+				backgroundList[0].setAt = 0;
+				for(var i = 1;i < backgroundList.length;i++) {
+					backgroundList[i].setAt = milFromMidnight(parseInt(words[index++]), parseInt(words[index++]));
+				}
 			}
 			//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
 			backgroundNum = backgroundList.length - 1;

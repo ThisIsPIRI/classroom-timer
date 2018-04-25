@@ -37,3 +37,6 @@ backgrounds
 black.png rgb(255,255,255) rgb(30,30,30) none
 white.png rgb(0,0,0) rgb(200,200,200) other than myself? then none end
 end
+cycle
+20 00
+end

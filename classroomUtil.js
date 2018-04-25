@@ -1,3 +1,4 @@
+/**Returns a String with every element in menuStrings separated by a <br>.*/
 const makeMenuString = function(menuStrings) {
 	if(!Array.isArray(menuStrings)) return "";
 	var result = "";
@@ -5,7 +6,7 @@ const makeMenuString = function(menuStrings) {
 		result += menuStrings[i] + "<br>";
 	}
 	return result;
-}
+};
 
 /**Constructs a timetable String from an Array of Strings.
  * @param subjects {Array} The Array containing names of the subjects.
@@ -22,3 +23,9 @@ const makeTimetableString = function(day, nextTime) {
 	}
 	return tableString.substr(0, tableString.length - 2);
 };
+
+/**Returns milliseconds from the last midnight at given hours, minutes and seconds from the midnight.*/
+const milFromMidnight = function(hours, minutes, seconds) {
+	seconds = seconds != null ? seconds : 0;
+	return hours * 3600000 + minutes * 60000 + seconds * 1000;
+}

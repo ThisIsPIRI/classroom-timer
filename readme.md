@@ -48,4 +48,6 @@ Under the last section, backgrounds, you write the name of the background image,
 
 For the colors, you can use anything CSS accepts: color names, rgb or hsl for example. Since spaces separate tokens in this file, one color or filename MUST NOT contain any spaces. Example: rgb(255, 255, 255) cannot be used, while rgb(255,255,255) can. Don't write semicolons at the end of them.
 
-If you don't want to credit someone, write 'none' as the fourth word. Because of this, you can't use 'none' as the first word of the author. The case doesn't matter. Each background must have 'end' at the end, except when the author is 'none'. When you're finished, don't forget to put an 'end' at the end of the section, too.
+If you don't want to credit someone, write 'none' as the fourth word. Because of this, you can't use 'none' as the first word of the author. The case doesn't matter. Each background must have 'end' at the end, except when the author is 'none'. Write an 'end' after all backgrounds.
+
+If you want to cycle backgrounds as time goes by, write "cycle" after the last background and write the hour(0-23) and minute(0-59) at which the background should change for all backgrounds except the first one, which is displayed before any change.. The order of backgrounds and times must match. When you're finished, don't forget to put an 'end' at the end of the section, too.
