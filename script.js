@@ -81,8 +81,10 @@ const dayUpdate = function() {
 	//Update the timetable.
 	freeOrClassUpdate(initDay, 0);
 	
-	//Reset the background if it is set to cycle.
-	if(cycleBackgrounds) setBackgroundTo(0);
+	//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
+	//Needed in dayUpdate() to reset the background if it was set to cycle.
+	backgroundNum = backgroundList.length - 1;
+	changeBackground();
 	
 	//Schedule next update.
 	if(dayUpdateTimeout != null) clearTimeout(dayUpdateTimeout);
@@ -273,9 +275,6 @@ fileReader.read("data.txt", function(data) {
 					backgroundList[i].setAt = milFromMidnight(parseInt(words[index++]), parseInt(words[index++]));
 				}
 			}
-			//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
-			backgroundNum = backgroundList.length - 1;
-			changeBackground();
 			break;
 		}
 	}
