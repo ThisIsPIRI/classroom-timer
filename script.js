@@ -64,7 +64,7 @@ const dayUpdate = function() {
 	menuText.innerHTML = makeMenuString(lunchMenu);
 	
 	//Make the menu visible again, in case it was greyed out.
-	menuText.style.color = backgroundList[backgroundNum].enabledColor;
+	menuText.className = "enabled";
 	
 	//Fill today's variable subject slots.
 	var varDate = new Date(initDate.getFullYear(), initDate.getMonth());
@@ -140,7 +140,7 @@ const entryChanged = function(day, last, now, nowIndex) {
 	var nextClass = nowIndex;
 	while(ent[nextClass].type !== Entry.Type.CLASS && nextClass < ent.length)
 		nextClass++;
-	inFreeTime = now.type !== Entry.Type.CLASS; //Set this manually every time; the timer may be started after the first recess.
+	inFreetime = now.type !== Entry.Type.CLASS; //Set this manually every time; the timer may be started after the first recess.
 	if(last == null) {
 		freeOrClassUpdate(day, ent[nextClass].subIndex);
 	}
@@ -155,7 +155,7 @@ const entryChanged = function(day, last, now, nowIndex) {
 		//Change menuText to show the dinner after the lunchtime
 		if(last.type === Entry.Type.MEAL) {
 			if(!Array.isArray(dinnerMenu) || dinnerMenu.length <= 0) //There is no dinner. Grey out menuText.
-				menuText.style.color = backgroundList[backgroundNum].disabledColor;
+				menuText.className = "disabled";
 			else
 				menuText.innerHTML = makeMenuString(dinnerMenu);
 		}
@@ -281,11 +281,12 @@ fileReader.read("data.txt", function(data) {
 	//DEBUG
 	/*const tempDate = new Date();
 	const tempDay = tempDate.getDay();
-	week[tempDay].startTime = tempDate.getHours() * 60 * 60 + tempDate.getMinutes() * 60 + tempDate.getSeconds() + 5
-	week[tempDay].lunchTime = 5;
-	week[tempDay].lunchStart = 3;
-	week[tempDay].subjects = ["1", "2", "3", "4", "5"];
-	classTime = [5, 5, 5, 5, 5], restTime = [5, 5, 5, 5, 5];*/
+	week[tempDay].startTime = tempDate.getHours() * 60 * 60 + tempDate.getMinutes() * 60 + tempDate.getSeconds() + 2
+	week[tempDay].lunchTime = 3;
+	week[tempDay].lunchStart = 1;
+	week[tempDay].subjects = ["1", "2", "3", "4"];
+	classTime = [5, 5, 5, 5], restTime = [5, 5, 5, 5];
+	backgroundList[1].setAt = milFromMidnight(tempDate.getHours(), tempDate.getMinutes(), tempDate.getSeconds() + 35);*/
 	
 	//Generate entries. They will be naturally sorted.
 	for(var day = 0;day < 7;day++) {

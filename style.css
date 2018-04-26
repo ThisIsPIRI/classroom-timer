@@ -29,3 +29,6 @@ article {
 footer {
 	font-size:70%;
 }
+.disabled {
+	color:rgb(30,30,30);
+}
