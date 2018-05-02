@@ -40,6 +40,8 @@ If the subject inside a slot varies each week, write a literal 'var' instead of 
 ### variables
 variables is where you fill 'var's in the timetable. Under "variables", write a number specifying the year, month and day the list below starts in. After that, start writing the subjects in ascending order of their days. This section isn't needed if you don't have any variable subject slots.
 
+If you want the variable subjects to cyclically enter the timetable, write "cycle" right before "end". The case doesn't matter. Because of this, the word "cycle" can't be used as a name of a variable subject.
+
 ### menuURL
 menuURL is simple: write menuURL, the URL to fetch the menu from(including the protocol - http://), and the necessary 'end'.
 

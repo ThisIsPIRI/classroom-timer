@@ -34,15 +34,16 @@ var lastEntry = null;
 const weekNames = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
 const week = []; //Where all day-specific information is stored
 var classTime = [], restTime = []; //Not const because they have to be a property of window
-var bellError = 0;
+var bellError = 0; //By how many seconds the bell is ahead of the actual time
 var totalPhysicalTime = NaN; //The total duration of school in the day
 var menuURL = null; //The URL to fetch the menus from
-var rawMenuCache = "";
+var rawMenuCache = ""; //The content of menu webpage
 var lunchMenu = [], dinnerMenu = [];
 var dayUpdateTimeout = null;
 var varStart = null;
 var varSubjects = [];
-var cycleBackgrounds = false;
+var cycleBackgrounds = false; //Whether to automatically cycle the backgrounds at certain times
+var cycleVars = false; //Whether to cyclically add the variable subject after the end of the list is reached
 
 /**Updates variables after a change in the current day. Must be called AFTER fileReader callback.*/
 const dayUpdate = function() {
@@ -67,16 +68,7 @@ const dayUpdate = function() {
 	menuText.className = "enabled";
 	
 	//Fill today's variable subject slots.
-	var varDate = new Date(varStart.getTime());
-	var varDayOfMonth = initDate.getDate();
-	var sum = 0;
-	for(var i = varStart;i < varDayOfMonth;i++) {
-		varDate.setDate(i);
-		sum += week[varDate.getDay()].varSlots.length;
-	}
-	for(var i = 0;i < week[initDay].varSlots.length;i++, sum++) {
-		week[initDay].subjects[week[initDay].varSlots[i]] = varSubjects[sum];
-	}
+	fillVars(new Date(initDate.getTime()));
 	
 	//Update the timetable.
 	freeOrClassUpdate(initDay, 0);
@@ -90,6 +82,23 @@ const dayUpdate = function() {
 	if(dayUpdateTimeout != null) clearTimeout(dayUpdateTimeout);
 	dayUpdateTimeout = setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - initDate.getMilliseconds());
 };
+
+/**Fills the supplied date's variable subject slots.
+ * @param today {Date} - The Date to fill in.*/
+const fillVars = function(today) {
+	today.setHours(0, 0, 0, 0);
+	var varDate = new Date(varStart.getTime());
+	varDate.setHours(0, 0, 0, 0); //Remove everything smaller than a day
+	var sum = 0;
+	for(;today - varDate !== 0;varDate.setDate(varDate.getDate() + 1)); {
+		sum += week[varDate.getDay()].varSlots.length;
+	}
+	for(var i = 0;i < week[today.getDay()].varSlots.length;i++, sum++) {
+		if(cycleVars && sum >= varSubjects.length)
+			sum %= varSubjects.length;
+		week[today.getDay()].subjects[week[today.getDay()].varSlots[i]] = varSubjects[sum];
+	}
+}
 
 //Called from update() when entering freetime or class time
 const freeOrClassUpdate = function(day, nextTime) {
@@ -245,10 +254,15 @@ fileReader.read("data.txt", function(data) {
 			break;
 			
 		case "variables":
-			varStart = new Date(words[index + 1], words[index + 2], words[index + 3]);
+			varStart = new Date(parseInt(words[index + 1]), parseInt(words[index + 2]) - 1, parseInt(words[index + 3]));
 			index += 3;
-			while(words[++index] !== "end")
+			while(words[++index] !== "end") {
+				if(words[index] === "cycle") {
+					cycleVars = true;
+					continue;
+				}
 				varSubjects.push(words[index]);
+			}
 			break;
 			
 		case "menuURL":
