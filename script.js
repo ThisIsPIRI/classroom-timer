@@ -40,7 +40,7 @@ var menuURL = null; //The URL to fetch the menus from
 var rawMenuCache = "";
 var lunchMenu = [], dinnerMenu = [];
 var dayUpdateTimeout = null;
-var varStart = 1;
+var varStart = null;
 var varSubjects = [];
 var cycleBackgrounds = false;
 
@@ -67,7 +67,7 @@ const dayUpdate = function() {
 	menuText.className = "enabled";
 	
 	//Fill today's variable subject slots.
-	var varDate = new Date(initDate.getFullYear(), initDate.getMonth());
+	var varDate = new Date(varStart.getTime());
 	var varDayOfMonth = initDate.getDate();
 	var sum = 0;
 	for(var i = varStart;i < varDayOfMonth;i++) {
@@ -245,7 +245,8 @@ fileReader.read("data.txt", function(data) {
 			break;
 			
 		case "variables":
-			varStart = words[++index];
+			varStart = new Date(words[index + 1], words[index + 2], words[index + 3]);
+			index += 3;
 			while(words[++index] !== "end")
 				varSubjects.push(words[index]);
 			break;

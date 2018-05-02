@@ -38,7 +38,7 @@ Under timetable, you put the names of the 7 days, the names of the subjects in e
 If the subject inside a slot varies each week, write a literal 'var' instead of a subject name and fill it below. The case of 'var' doesn't matter.
 
 ### variables
-variables is where you fill 'var's in the timetable. Under "variables", write a number specifying the day of current month the list below starts. After that, start writing the subjects in ascending order of their days. This section isn't needed if you don't have any variable subject slots.
+variables is where you fill 'var's in the timetable. Under "variables", write a number specifying the year, month and day the list below starts in. After that, start writing the subjects in ascending order of their days. This section isn't needed if you don't have any variable subject slots.
 
 ### menuURL
 menuURL is simple: write menuURL, the URL to fetch the menu from(including the protocol - http://), and the necessary 'end'.
