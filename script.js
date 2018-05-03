@@ -92,7 +92,7 @@ const fillVars = function(today) {
 	var varDate = new Date(varStart.getTime());
 	varDate.setHours(0, 0, 0, 0); //Remove everything smaller than a day
 	var sum = 0;
-	for(;today - varDate !== 0;varDate.setDate(varDate.getDate() + 1)); {
+	for(;today - varDate !== 0;varDate.setDate(varDate.getDate() + 1)) {
 		sum += week[varDate.getDay()].varSlots.length;
 	}
 	for(var i = 0;i < week[today.getDay()].varSlots.length;i++, sum++) {
@@ -105,7 +105,7 @@ const fillVars = function(today) {
 //Called from update() when entering freetime or class time
 const freeOrClassUpdate = function(day, nextTime) {
 	//timetable update
-	timetable.innerHTML = makeTimetableString(week[day], nextTime);
+	timetable.innerHTML = makeTimetableString(week[day].subjects, nextTime);
 	rainbow.stopAll(); //Since we only need one rainbow-applied element in this document, it's safe to use stopAll().
 	rainbow.start(document.getElementById("current"), 0);
 	if(inFreetime) subject.innerHTML = "다음 시간은 " + week[day].subjects[nextTime] + " 시간입니다.";

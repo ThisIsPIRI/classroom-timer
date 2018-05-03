@@ -24,7 +24,8 @@ const cutUp = function(toCut, chunkLen, atEnd) {
  * @param lenLimit {integer} The longest possible length of a line. Pass 0 or a negative value to disable limit. Defaults to 0.
  * @returns {String} The String. An empty one if menuStrings isn't an Array or is empty.*/
 const makeMenuString = function(menuStrings, lenLimit) {
-	if(!Array.isArray(menuStrings)) return "";
+	if(!Array.isArray(menuStrings))
+		return "";
 	lenLimit = lenLimit != undefined ? lenLimit : 0
 
 	var result = "";
@@ -46,15 +47,18 @@ const makeMenuString = function(menuStrings, lenLimit) {
 /**Constructs a timetable String from an Array of Strings.
  * @param subjects {Array} The Array containing names of the subjects.
  * @param nextTime {integer} The index of the next(current if inside a class) in subjects.
- * @returns {String} A String with the next subject inside a span with id "current".*/
-const makeTimetableString = function(day, nextTime) {
+ * @returns {String} A String with the next subject inside a span with id "current". An empty one if subjects is empty.*/
+const makeTimetableString = function(subjects, nextTime) {
+	if(!Array.isArray(subjects))
+		return "";
+	
 	var tableString = "";
-	for(var i = 0;i < day.subjects.length;i++) {
+	for(var i = 0;i < subjects.length;i++) {
 		if(i === nextTime) {
-			tableString += "<span id=\"current\">" + day.subjects[i] + "</span>, ";
+			tableString += "<span id=\"current\">" + subjects[i] + "</span>, ";
 		}
 		else
-			tableString += day.subjects[i] + ", ";
+			tableString += subjects[i] + ", ";
 	}
 	return tableString.substr(0, tableString.length - 2);
 };
