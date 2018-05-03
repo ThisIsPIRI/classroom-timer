@@ -1,4 +1,5 @@
 //TODO: refactor into a class(not necessarily an ES6 class)
+//TODO: generalize lunch handling to support three or more meals per day
 /**Entry(a class, recess, lunch ...) constructor.*/
 const Entry = function(type, start, end, subIndex) {
 	this.type = type;
@@ -153,6 +154,9 @@ const entryChanged = function(day, last, now, nowIndex) {
 	inFreetime = now.type !== Entry.Type.CLASS; //Set this manually every time; the timer may be started after the first recess.
 	if(last == null) {
 		freeOrClassUpdate(day, ent[nextClass].subIndex);
+		//Update to dinner when started after the lunchtime.
+		if(ent[nextClass].subIndex > week[day].lunchStart && now.type !== Entry.Type.MEAL)
+			lunchEnd();
 	}
 	else {
 		//recess/class time switch
@@ -163,15 +167,19 @@ const entryChanged = function(day, last, now, nowIndex) {
 				freeOrClassUpdate(day, ent[nextClass].subIndex);
 		}
 		//Change menuText to show the dinner after the lunchtime
-		if(last.type === Entry.Type.MEAL) {
-			if(!Array.isArray(dinnerMenu) || dinnerMenu.length <= 0) //There is no dinner. Grey out menuText.
-				menuText.className = "disabled";
-			else
-				menuText.innerHTML = makeMenuString(dinnerMenu, MENU_LIMIT);
-		}
+		if(last.type === Entry.Type.MEAL)
+			lunchEnd();
 	}
 	return nextClass < ent.length ? ent[nextClass].subIndex : week[day].subjects.length;
 };
+
+/**Updates menuText for dinner or greys it out if dinnerMenu is empty.*/
+const lunchEnd = function() {
+	if(!Array.isArray(dinnerMenu) || dinnerMenu.length <= 0) //There is no dinner. Grey out menuText.
+		menuText.className = "disabled";
+	else
+		menuText.innerHTML = makeMenuString(dinnerMenu, MENU_LIMIT);
+}
 
 //main update function called every second
 const update = function() {
