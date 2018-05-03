@@ -44,6 +44,7 @@ var varStart = null;
 var varSubjects = [];
 var cycleBackgrounds = false; //Whether to automatically cycle the backgrounds at certain times
 var cycleVars = false; //Whether to cyclically add the variable subject after the end of the list is reached
+const MENU_LIMIT = 7;
 
 /**Updates variables after a change in the current day. Must be called AFTER fileReader callback.*/
 const dayUpdate = function() {
@@ -62,7 +63,7 @@ const dayUpdate = function() {
 	//Cache and update the menu.
 	lunchMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.LUNCH);
 	dinnerMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.DINNER);
-	menuText.innerHTML = makeMenuString(lunchMenu);
+	menuText.innerHTML = makeMenuString(lunchMenu, MENU_LIMIT);
 	
 	//Make the menu visible again, in case it was greyed out.
 	menuText.className = "enabled";
@@ -166,7 +167,7 @@ const entryChanged = function(day, last, now, nowIndex) {
 			if(!Array.isArray(dinnerMenu) || dinnerMenu.length <= 0) //There is no dinner. Grey out menuText.
 				menuText.className = "disabled";
 			else
-				menuText.innerHTML = makeMenuString(dinnerMenu);
+				menuText.innerHTML = makeMenuString(dinnerMenu, MENU_LIMIT);
 		}
 	}
 	return nextClass < ent.length ? ent[nextClass].subIndex : week[day].subjects.length;
