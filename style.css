@@ -9,7 +9,7 @@ body {
 	font-family:batang;
 }
 article {
-	font-size:320%;
+	font-size:350%;
 }
 #menuText,#totalTime {
 	position:absolute;
@@ -17,11 +17,11 @@ article {
 #menuText {
 	font-size:70%;
 	left:10px;
-	top:60px;
+	top:40px;
 }
 #totalTime {
 	right:10px;
-	top:100px;
+	top:80px;
 }
 #timetable {
 	font-size:80%;

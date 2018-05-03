@@ -62,8 +62,11 @@ const dayUpdate = function() {
 	totalPhysicalTime = getTotalTime(initDay);
 	
 	//Cache and update the menu.
-	lunchMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.LUNCH);
-	dinnerMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.DINNER);
+	const descLength = function(a, b) { //Comparison function to sort strings by descending order of their length
+		return b.length - a.length;
+	}
+	lunchMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.LUNCH).sort(descLength);
+	dinnerMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.DINNER).sort(descLength);
 	menuText.innerHTML = makeMenuString(lunchMenu, MENU_LIMIT);
 	
 	//Make the menu visible again, in case it was greyed out.
@@ -266,7 +269,7 @@ fileReader.read("data.txt", function(data) {
 			varStart = new Date(parseInt(words[index + 1]), parseInt(words[index + 2]) - 1, parseInt(words[index + 3]));
 			index += 3;
 			while(words[++index] !== "end") {
-				if(words[index] === "cycle") {
+				if(words[index].toUpperCase() === "CYCLE") {
 					cycleVars = true;
 					continue;
 				}
