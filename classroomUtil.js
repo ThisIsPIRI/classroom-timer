@@ -31,12 +31,7 @@ const makeMenuString = function(menuStrings, lenLimit) {
 	var result = "";
 	for(var i = 0;i < menuStrings.length;i++) {
 		if(lenLimit > 0 && menuStrings[i].length > lenLimit) {
-			//Handle escaped &s adding to the length
-			//TODO: handle more escaped characters
-			if(menuStrings[i].indexOf("&amp;") >= 0)
-				result += makeMenuString(menuStrings[i].split("&amp;"));
-			else
-				result += makeMenuString(cutUp(menuStrings[i], lenLimit, '-'));
+			result += makeMenuString(cutUp(menuStrings[i], lenLimit, '-'));
 		}
 		else
 			result += menuStrings[i] + "<br>";

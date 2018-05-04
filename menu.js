@@ -27,7 +27,12 @@ const parseRawMenu = function(rawMenu, day, menuType) {
 		}
 		else if((!isNaN(parseFloat(at)) || at === '<') && readingName) {
 			readingName = false; //Stop reading if a number(allergy information) or < is reached
-			menu.push(buffer);
+
+			//Split up entries with &s so they don't apear longer than they actually are
+			if(buffer.indexOf("&amp;") > 0)
+				menu = menu.concat(buffer.split("&amp;"));
+			else
+				menu.push(buffer);
 			buffer = "";
 		}
 		else if(at === '>') readingName = true;
