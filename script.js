@@ -45,7 +45,7 @@ var varStart = null;
 var varSubjects = [];
 var cycleBackgrounds = false; //Whether to automatically cycle the backgrounds at certain times
 var cycleVars = false; //Whether to cyclically add the variable subject after the end of the list is reached
-const MENU_LIMIT = 7;
+const MENU_LIMIT = 9;
 
 /**Updates variables after a change in the current day. Must be called AFTER fileReader callback.*/
 const dayUpdate = function() {
@@ -73,27 +73,28 @@ const dayUpdate = function() {
 	menuText.className = "enabled";
 	
 	//Fill today's variable subject slots.
-	fillVars(new Date(initDate.getTime()));
+	fillVars(initDate);
 	
 	//Update the timetable.
 	freeOrClassUpdate(initDay, 0);
 	
 	//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
-	//Needed in dayUpdate() to reset the background if it was set to cycle.
+	//Needed in dayUpdate() to reset the background if it's set to cycle.
 	backgroundNum = backgroundList.length - 1;
 	changeBackground();
 	
 	//Schedule next update.
 	if(dayUpdateTimeout != null) clearTimeout(dayUpdateTimeout);
-	dayUpdateTimeout = setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - initDate.getMilliseconds());
+	dayUpdateTimeout = setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - milFromMidnight(initDate));
 };
 
 /**Fills the supplied date's variable subject slots.
- * @param today {Date} - The Date to fill in.*/
+ * @param today {Date} - The Date to fill in. It will not be modified.*/
 const fillVars = function(today) {
+	today = new Date(today);
 	today.setHours(0, 0, 0, 0);
-	var varDate = new Date(varStart.getTime());
-	varDate.setHours(0, 0, 0, 0); //Remove everything smaller than a day
+	var varDate = new Date(varStart);
+	varDate.setHours(0, 0, 0, 0);
 	var sum = 0;
 	for(;today - varDate !== 0;varDate.setDate(varDate.getDate() + 1)) {
 		sum += week[varDate.getDay()].varSlots.length;

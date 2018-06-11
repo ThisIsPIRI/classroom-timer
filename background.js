@@ -31,8 +31,7 @@ const changeBackground = function() {
 	if(cycleBackgrounds) {
 		clearTimeout(cycleTimeout);
 		if(backgroundNum !== backgroundList.length - 1) { //If we haven't reached the end of the list
-			const now = new Date();
-			cycleTimeout = setTimeout(changeBackground, backgroundList[backgroundNum + 1].setAt - milFromMidnight(now.getHours(), now.getMinutes(), now.getSeconds()));
+			cycleTimeout = setTimeout(changeBackground, backgroundList[backgroundNum + 1].setAt - milFromMidnight(new Date()));
 		}
 	}
 }

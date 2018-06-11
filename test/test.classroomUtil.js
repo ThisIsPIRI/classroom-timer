@@ -1,5 +1,6 @@
 describe("classroomUtil", function() {
 	describe("cutUp", function() {
+		//TODO: split this up
 		it("should cut up Strings to chunks of a fixed length", function() {
 			chai.expect(cutUp("hello world sixch arslo ng", 6)).to.eql(["hello ", "world ", "sixch ", "arslo ", "ng"]);
 			chai.expect(cutUp("비ASCII 문자열", 2)).to.eql(["비A", "SC", "II", " 문", "자열"]);
@@ -39,8 +40,14 @@ describe("classroomUtil", function() {
 		it("should return the value of hours, minutes and seconds combined in milliseconds", function() {
 			chai.expect(milFromMidnight(3, 43, 12)).to.equal(3 * 60 * 60 * 1000 + 43 * 60 * 1000 + 12 * 1000);
 		});
+		it("should do the same with one Date", function() {
+			chai.expect(milFromMidnight(new Date(1685, 9, 23, 14, 54, 6))).to.equal(14 * 60 * 60 * 1000 + 54 * 60 * 1000 + 6000);
+		});
 		it("should assume seconds is 0 if it isn't given", function() {
 			chai.expect(milFromMidnight(5, 33)).to.equal(5 * 60 * 60 * 1000 + 33 * 60 * 1000);
+		});
+		it("should ignore any other arguments when a Date is given", function() {
+			chai.expect(milFromMidnight(new Date(2022, 1, 11, 17, 0, 0), 409, 43, 43)).to.equal(17 * 60 * 60 * 1000);
 		});
 	});
 });

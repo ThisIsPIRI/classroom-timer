@@ -2,7 +2,7 @@
  * The Strings will all have length of chunkLen, except the last one which may be 1~chunkLen-chars long.
  * @param toCut {String} The String to cut up.
  * @param chunkLen {integer} The length of resulting strings. It will be floored if it isn't an integer.
- * @param atEnd {String} The String to attach at the end of each cut Strings. Defaults to an empty one.
+ * @param atEnd {String} The String to attach at the end of each cut Strings except the last one. Defaults to an empty one.
  * @returns {Array} An Array containing the cut Strings. null if chunkLen is smaller than 1.*/
 const cutUp = function(toCut, chunkLen, atEnd) {
 	if(chunkLen <= 0)
@@ -13,7 +13,10 @@ const cutUp = function(toCut, chunkLen, atEnd) {
 
 	const result = [];
 	for(var i = 0;i < toCut.length;i += chunkLen) {
-		result.push(toCut.slice(i, i + chunkLen) + atEnd);
+		if(i + chunkLen < toCut.length)
+			result.push(toCut.slice(i, i + chunkLen) + atEnd);
+		else
+			result.push(toCut.slice(i, i + chunkLen));
 	}
 	return result;
 };
@@ -58,8 +61,15 @@ const makeTimetableString = function(subjects, nextTime) {
 	return tableString.substr(0, tableString.length - 2);
 };
 
-/**Returns milliseconds from the last midnight at given hours, minutes and seconds from the midnight.*/
-const milFromMidnight = function(hours, minutes, seconds) {
-	seconds = seconds != null ? seconds : 0;
-	return hours * 3600000 + minutes * 60000 + seconds * 1000;
+/**Returns milliseconds from the last midnight at given hours(time), minutes and seconds from the midnight.
+ * You can also pass a Date(or any object that has functions getHours, getMinutes and getSeconds as a member) to time;
+ * minutes and seconds will be ignored in that case.*/
+const milFromMidnight = function(time, minutes, seconds) {
+	if(time.getHours && time.getMinutes && time.getSeconds) {
+		return time.getTime() - new Date(time).setHours(0, 0, 0, 0);
+	}
+	else {
+		seconds = seconds != null ? seconds : 0;
+		return time * 3600000 + minutes * 60000 + seconds * 1000;
+	}
 }
