@@ -40,7 +40,7 @@ var totalPhysicalTime = NaN; //The total duration of school in the day
 var menuURL = null; //The URL to fetch the menus from
 var rawMenuCache = ""; //The content of menu webpage
 var lunchMenu = [], dinnerMenu = [];
-var dayUpdateTimeout = null;
+var lastDate = -1; //Used to determine whether to call dayUpdate or not
 var varStart = null;
 var varSubjects = [];
 var cycleBackgrounds = false; //Whether to automatically cycle the backgrounds at certain times
@@ -82,10 +82,6 @@ const dayUpdate = function() {
 	//Needed in dayUpdate() to reset the background if it's set to cycle.
 	backgroundNum = backgroundList.length - 1;
 	changeBackground();
-	
-	//Schedule next update.
-	if(dayUpdateTimeout != null) clearTimeout(dayUpdateTimeout);
-	dayUpdateTimeout = setTimeout(dayUpdate, 24 * 60 * 60 * 1000 - milFromMidnight(initDate));
 };
 
 /**Fills the supplied date's variable subject slots.
@@ -189,9 +185,13 @@ const lunchEnd = function() {
 const update = function() {
 	//Get current time
 	var now = new Date();
+	if(lastDate !== now.getDate()) {
+		lastDate = now.getDate();
+		dayUpdate();
+	}
 	var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds(), day = now.getDay();
 	time.innerHTML = h + "시 " + m + "분 " + s + "초";
-	var physicalTime = ((h * 60 * 60) + (m * 60) + s) + bellError;
+	var physicalTime = ((h * 3600) + (m * 60) + s) + bellError;
 	//Get current Entry
 	const index = getEntry(day, physicalTime);
 	const entry = week[day].entries[index];
@@ -336,9 +336,7 @@ fileReader.read("data.txt", function(data) {
 	
 	getMenuData(menuURL, function(menu) {
 		rawMenuCache = menu;
-		dayUpdate();
 	});
-	dayUpdate(); //Call once to ensure totalPhysicalTime and date is updated even when menu is unavailable
 });
 //Empty the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
 timetable.innerHTML = "";
