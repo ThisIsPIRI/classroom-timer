@@ -2,8 +2,7 @@
 A web-based timer for classrooms. May not be accurate or up-to-date. Use with Chrome and the arguments --disable-web-security and --user-data-dir is recommended.
 
 ## Features
-- Display the current time, current/next subject, how much time is left before the next class/recess/end of all classes and<del>, most importantly,</del> today's lunch menu. You have to manually set the URL to fetch the menu from before the lunch menu can be displayed.
-- Play sound some time before the class/recess starts. Unfortunately, no sound is included; you have to insert your own.
+- Display the current time, current/next subject, how much time is left before the next class/recess/end of all classes and<del>, most importantly,</del> today's lunch/dinner menu. You have to manually set the URL to fetch the menu from before the lunch menu can be displayed.
 
 ## Dependencies
 Requires rainbow.js and file.js from [my JS Library](https://github.com/ThisIsPIRI/js-library). Put them in lib directory.
@@ -53,3 +52,7 @@ For the colors, you can use anything CSS accepts: color names, rgb or hsl for ex
 If you don't want to credit someone, write 'none' as the fourth word. Because of this, you can't use 'none' as the first word of the author. The case doesn't matter. Each background must have 'end' at the end, except when the author is 'none'. Write an 'end' after all backgrounds.
 
 If you want to cycle backgrounds as time goes by, write "cycle" after the last background and write the hour(0-23) and minute(0-59) at which the background should change for all backgrounds except the first one, which is displayed before any change. The order of backgrounds and times must match. When you're finished, don't forget to put an 'end' at the end of the section, too.
+
+## QNA(Questions Never Asked)
+Why the name "timer", instead of something like "clock"?  
+-Because the emphasis is on the remaining time before the next class/recess and not the current time.
