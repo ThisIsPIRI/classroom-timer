@@ -47,10 +47,9 @@ const parseRawMenu = function(rawMenu, day, menuType) {
  * @param callback {Function} The Function to call after the menu is acquired. One Array, containing all menu items as Strings, will be passed into it.*/
 const getMenuData = function(menuURL, callback) {
 	const request = new XMLHttpRequest();
-	const menuDate = new Date();
 	request.onload = function() {
 		callback(request.responseText);
 	};
-	request.open("GET", menuURL + menuDate.getFullYear() + ("0" + (menuDate.getMonth() + 1)).slice(-2), true);
+	request.open("GET", menuURL, true);
 	request.send();
 }

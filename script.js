@@ -62,6 +62,7 @@ const dayUpdate = function() {
 	totalPhysicalTime = getTotalTime(initDay);
 	
 	//Cache and update the menu.
+	//TODO: update menuURL and fetch the menu again if the month has changed
 	const descLength = function(a, b) { //Comparison function to sort strings by descending order of their length
 		return b.length - a.length;
 	}
@@ -279,7 +280,8 @@ fileReader.read("data.txt", function(data) {
 			break;
 			
 		case "menuURL":
-			menuURL = words[++index];
+			const menuDate = new Date();
+			menuURL = words[++index] + menuDate.getFullYear() + ("0" + (menuDate.getMonth() + 1)).slice(-2);
 			break;
 			
 		case "backgrounds":
