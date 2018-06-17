@@ -336,11 +336,11 @@ fileReader.read("data.txt", function(data) {
 		}
 	}
 	
-	getMenuData(menuURL, function(menu) {
+	getMenuData(menuURL, function(menu) { //Called regardless of if the request succeeds or not, unless it is aborted.
 		rawMenuCache = menu;
+		//Finally, set an interval for the main update function.
+		setInterval(update, 1000);
 	});
 });
 //Empty the timetable once to prevent the placeholder in the HTML from appearing when all classes have already ended at startup.
 timetable.innerHTML = "";
-//Register the interval
-setInterval(update, 1000);

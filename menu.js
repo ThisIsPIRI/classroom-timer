@@ -44,11 +44,15 @@ const parseRawMenu = function(rawMenu, day, menuType) {
 
 /**Fetches a menu by means of AJAX and gives it to the callback as raw String containing the HTML.
  * @param menuURL {String} The URL to fetch the menu from.
- * @param callback {Function} The Function to call after the menu is acquired. One Array, containing all menu items as Strings, will be passed into it.*/
+ * @param callback {Function} The Function to call after the menu is acquired or the request fails(onload or onerror).
+ * The responseText of the request, or null if the request fails, will be passed into it.*/
 const getMenuData = function(menuURL, callback) {
 	const request = new XMLHttpRequest();
 	request.onload = function() {
 		callback(request.responseText);
+	};
+	request.onerror = function() {
+		callback(null);
 	};
 	request.open("GET", menuURL, true);
 	request.send();
