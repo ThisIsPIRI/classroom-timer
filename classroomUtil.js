@@ -49,7 +49,7 @@ const makeMenuString = function(menuStrings, lenLimit) {
 const makeTimetableString = function(subjects, nextTime) {
 	if(!Array.isArray(subjects))
 		return "";
-	
+
 	var tableString = "";
 	for(var i = 0;i < subjects.length;i++) {
 		if(i === nextTime) {

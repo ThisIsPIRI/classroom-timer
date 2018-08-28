@@ -54,24 +54,24 @@ const dayUpdate = function() {
 	date.innerHTML = initDate.getFullYear() + "년 " + (initDate.getMonth() + 1) + "월 " + initDate.getDate() + "일 " + weekNames[initDay];
 	//Update the total time.
 	totalPhysicalTime = getTotalTime(initDay);
-	
+
 	//Remove the last Entry yesterday.
 	lastEntry = null;
-	
+
 	//Update the total time in school.
 	totalPhysicalTime = getTotalTime(initDay);
-	
+
 	//Fill today's variable subject slots.
 	fillVars(initDate);
-	
+
 	//Update the timetable.
 	freeOrClassUpdate(initDay, 0);
-	
+
 	//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
 	//Needed in dayUpdate() to reset the background if it's set to cycle.
 	backgroundNum = backgroundList.length - 1;
 	changeBackground();
-	
+
 	//Cache and update the menu. Placed last due to being the most error-prone part.
 	//TODO: update menuURL and fetch the menu again if the month has changed
 	const descLength = function(a, b) { //Comparison function to sort strings by descending order of their length
@@ -80,7 +80,7 @@ const dayUpdate = function() {
 	lunchMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.LUNCH).sort(descLength);
 	dinnerMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.DINNER).sort(descLength);
 	menuText.innerHTML = makeMenuString(lunchMenu, MENU_LIMIT);
-	
+
 	//Make the menu visible again, in case it was greyed out.
 	menuText.className = "enabled";
 };
@@ -203,7 +203,7 @@ const update = function() {
 	}
 	//Check if all Entries are finished
 	if(index === week[day].entries.length) return;
-	
+
 	//remaining time update
 	var remain = entry.end - physicalTime;
 	var remainString = inFreetime ? "다음 시간까지 " : "수업 종료까지 ";
@@ -211,7 +211,7 @@ const update = function() {
 		remaining.innerHTML = remainString + Math.floor(remain / 60) + "분 " + (remain % 60) + "초 남았습니다.";
 	else
 		remaining.innerHTML = remainString + remain + "초 남았습니다.";
-	
+
 	//remaining total time update
 	var end = totalPhysicalTime - physicalTime;
 	totalTime.innerHTML = "일정 종료까지 <br>" + Math.floor(end / 3600) + "시간 " + Math.floor(end % 3600 / 60) + "분 " + end % 60 + "초";
@@ -252,7 +252,7 @@ fileReader.read("data.txt", function(data) {
 				index++; //Move to next target.
 			}
 			break;
-			
+
 		case "timetable":
 			index += 2; //Jump to the first subject(or "end" if there is no subject on the first day(sunday)).
 			for(var day = 0;day < 7;day++) {
@@ -266,7 +266,7 @@ fileReader.read("data.txt", function(data) {
 				index += 2;
 			}
 			break;
-			
+
 		case "variables":
 			varStart = new Date(parseInt(words[index + 1]), parseInt(words[index + 2]) - 1, parseInt(words[index + 3]));
 			index += 3;
@@ -278,12 +278,12 @@ fileReader.read("data.txt", function(data) {
 				varSubjects.push(words[index]);
 			}
 			break;
-			
+
 		case "menuURL":
 			const menuDate = new Date();
 			menuURL = words[++index] + menuDate.getFullYear() + ("0" + (menuDate.getMonth() + 1)).slice(-2);
 			break;
-			
+
 		case "backgrounds":
 			index++;
 			while(words[index] != "end") {
@@ -335,7 +335,7 @@ fileReader.read("data.txt", function(data) {
 			now += classTime[i];
 		}
 	}
-	
+
 	getMenuData(menuURL, function(menu) { //Called regardless of if the request succeeds or not, unless it is aborted.
 		rawMenuCache = menu;
 		//Finally, set an interval for the main update function.

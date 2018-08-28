@@ -16,7 +16,7 @@ const parseRawMenu = function(rawMenu, day, menuType) {
 		if(dinnerStart === -1) return []; //No dinner data provided
 		i = rawMenu.indexOf(']', dinnerStart) //Start from "[석식]" if parsing a dinner
 	}
-		
+	
 	var buffer = "", readingName = false, menu = [], at = ' ';
 	while(at !== "") {
 		at = rawMenu.charAt(i);
