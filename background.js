@@ -22,9 +22,9 @@ const setBackgroundTo = function(index) {
 	rules[7].style.color = backgroundList[backgroundNum].disabledColor;
 	
 	if(backgroundList[backgroundNum].author == null)
-		footer.innerHTML = "Classroom Timer 0.6 BETA<br>이 정보를 사용함으로 인해 발생하는 손실에 대해 누구도 일절의 책임을 지지 않습니다.";
+		footer.innerHTML = "Classroom Timer 0.7 BETA<br>이 정보를 사용함으로 인해 발생하는 손실에 대해 누구도 일절의 책임을 지지 않습니다.";
 	else
-		footer.innerHTML = "Classroom Timer 0.6 BETA<br>Image: " + backgroundList[backgroundNum].author + "<br>이 정보를 사용함으로 인해 발생하는 손실에 대해 누구도 일절의 책임을 지지 않습니다.";
+		footer.innerHTML = "Classroom Timer 0.7 BETA<br>Image: " + backgroundList[backgroundNum].author + "<br>이 정보를 사용함으로 인해 발생하는 손실에 대해 누구도 일절의 책임을 지지 않습니다.";
 }
 const changeBackground = function() {
 	setBackgroundTo((backgroundNum + 1) % backgroundList.length);

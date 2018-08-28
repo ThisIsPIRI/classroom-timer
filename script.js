@@ -61,18 +61,6 @@ const dayUpdate = function() {
 	//Update the total time in school.
 	totalPhysicalTime = getTotalTime(initDay);
 	
-	//Cache and update the menu.
-	//TODO: update menuURL and fetch the menu again if the month has changed
-	const descLength = function(a, b) { //Comparison function to sort strings by descending order of their length
-		return b.length - a.length;
-	}
-	lunchMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.LUNCH).sort(descLength);
-	dinnerMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.DINNER).sort(descLength);
-	menuText.innerHTML = makeMenuString(lunchMenu, MENU_LIMIT);
-	
-	//Make the menu visible again, in case it was greyed out.
-	menuText.className = "enabled";
-	
 	//Fill today's variable subject slots.
 	fillVars(initDate);
 	
@@ -83,6 +71,18 @@ const dayUpdate = function() {
 	//Needed in dayUpdate() to reset the background if it's set to cycle.
 	backgroundNum = backgroundList.length - 1;
 	changeBackground();
+	
+	//Cache and update the menu. Placed last due to being the most error-prone part.
+	//TODO: update menuURL and fetch the menu again if the month has changed
+	const descLength = function(a, b) { //Comparison function to sort strings by descending order of their length
+		return b.length - a.length;
+	}
+	lunchMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.LUNCH).sort(descLength);
+	dinnerMenu = parseRawMenu(rawMenuCache, initDate.getDate(), MenuType.DINNER).sort(descLength);
+	menuText.innerHTML = makeMenuString(lunchMenu, MENU_LIMIT);
+	
+	//Make the menu visible again, in case it was greyed out.
+	menuText.className = "enabled";
 };
 
 /**Fills the supplied date's variable subject slots.
