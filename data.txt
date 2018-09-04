@@ -29,6 +29,8 @@ s0_1
 cycle
 end
 
+//You may also download the page beforehand to this directory and supply the filename to menuURL.
+
 menuURL
 AddDate
 http://stu.sen.go.kr/sts_sci_md00_001.do?schulCode=B100000456&schulCrseScCode=3&SchulKndScCode=04&schYm=

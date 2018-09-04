@@ -5,7 +5,7 @@ sudo service ntp start
 sudo pkill python3
 sudo pkill python
 cd ct
-python3 downloadMenu.py
+python3 downloadMenu.py "http://stu.sen.go.kr/sts_sci_md00_001.do?schulCode=B100000456&schulCrseScCode=3&SchulKndScCode=04&schYm="
 unclutter &
 python3 -m http.server &
 su pi -c "chromium-browser --kiosk --incognito 0.0.0.0:8000/timer.html"
