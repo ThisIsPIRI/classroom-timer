@@ -47,7 +47,7 @@ var cycleBackgrounds = false; //Whether to automatically cycle the backgrounds a
 var cycleVars = false; //Whether to cyclically add the variable subject after the end of the list is reached
 const MENU_LIMIT = 9;
 
-/**Updates variables after a change in the current day. Must be called AFTER fileReader callback.*/
+/**Updates variables after a change in the current day. Must be called AFTER ajaxRequester callback.*/
 const dayUpdate = function() {
 	var initDate = new Date();
 	var initDay = initDate.getDay();
@@ -222,8 +222,8 @@ for(var i  = 0;i < 7;i++) {
 	week.push(new DayWeek(weekNames[i]));
 }
 //TODO: use the parsing function below to make something that can convert current data.txt to JSON and remove it from here
-fileReader.read("data.txt", function(data) {
-	const words = fileReader.getTokensFrom(data);
+ajaxRequester.request("data.txt", function(data) {
+	const words = ajaxRequester.getTokensFrom(data);
 	for(var index = 0;index < words.length;index++) { //Parse the file. Warning: index is modified inside the loop.
 		switch(words[index]) {
 		case "schedule":

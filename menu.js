@@ -47,13 +47,5 @@ const parseRawMenu = function(rawMenu, day, menuType) {
  * @param callback {Function} The Function to call after the menu is acquired or the request fails(onload or onerror).
  * The responseText of the request, or an empty String if the request fails, will be passed into it.*/
 const getMenuData = function(menuURL, callback) {
-	const request = new XMLHttpRequest();
-	request.onload = function() {
-		callback(request.responseText);
-	};
-	request.onerror = function() {
-		callback('');
-	};
-	request.open("GET", menuURL, true);
-	request.send();
+	ajaxRequester.request(menuURL, callback, true);
 }
