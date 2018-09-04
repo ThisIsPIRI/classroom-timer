@@ -8,7 +8,7 @@ A web-based timer for classrooms. May not be accurate or up-to-date. Use with Ch
 Requires rainbow.js and file.js from [my JS Library](https://github.com/ThisIsPIRI/js-library). Put them in lib directory.
 
 ## The format
-When you're writing data files for the timer, you have to follow a certain format. The file consists of 4 sections: schedule, timetable, lunchURL and backgrounds. A literal 'end' MUST be the last token of a section. The order of the sections doesn't matter. You can use either spaces or newlines to separate tokens. Comments can be written outside of the 5 main sections.
+When you're writing data files for the timer, you have to follow a certain format. The file consists of 5 sections: schedule, timetable, variables, lunchURL and backgrounds. A literal 'end' MUST be the last token of a section. The order of the sections doesn't matter. You can use either spaces or newlines to separate tokens. Comments can be written outside of the 5 main sections.
 
 ### schedule
 Under schedule, you need 7 things:
@@ -42,7 +42,7 @@ variables is where you fill 'var's in the timetable. Under "variables", write a 
 If you want the variable subjects to cyclically enter the timetable, write "cycle" right before "end". The case doesn't matter. Because of this, the word "cycle" can't be used as the name of a variable subject.
 
 ### menuURL
-menuURL is simple: write menuURL, the URL to fetch the menu from(including the protocol - http://), and the necessary 'end'.
+menuURL is simple: write menuURL, the URL to fetch the menu from(including the protocol - http://), and the necessary 'end'. If you want the year and month added at the end of the URL, write 'addDate' before the URL. The case doesn't matter. Because of this, the word 'addDate' can't be used as a menuURL.
 
 ### backgrounds
 Under the last section, backgrounds, you write the name of the background image, the color of texts when they are enabled over the background, the color of them when they're disabled and the optional person/organization/whatever to credit the image to. The file must be in the same directory as the HTML.

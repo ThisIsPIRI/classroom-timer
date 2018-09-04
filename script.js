@@ -280,8 +280,11 @@ fileReader.read("data.txt", function(data) {
 			break;
 
 		case "menuURL":
-			const menuDate = new Date();
-			menuURL = words[++index] + menuDate.getFullYear() + ("0" + (menuDate.getMonth() + 1)).slice(-2);
+			if(words[++index].toUpperCase() === "ADDDATE") {
+				const menuDate = new Date();
+				menuURL = words[++index] + menuDate.getFullYear() + ("0" + (menuDate.getMonth() + 1)).slice(-2);
+			}
+			else menuURL = words[index];
 			break;
 
 		case "backgrounds":
