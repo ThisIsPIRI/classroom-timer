@@ -29,7 +29,7 @@ s0_1
 cycle
 end
 
-//You may also download the page beforehand to this directory and supply the filename to menuURL.
+//You may also download the page beforehand and supply the filename to menuURL.
 
 menuURL
 AddDate
