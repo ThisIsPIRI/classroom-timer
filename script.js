@@ -46,7 +46,10 @@ var varSubjects = [];
 var cycleBackgrounds = false; //Whether to automatically cycle the backgrounds at certain times
 var cycleVars = false; //Whether to cyclically add the variable subject after the end of the list is reached
 const MENU_LIMIT = 9;
+const bgManager = new BgManager(document.getElementsByTagName("body")[0], document.getElementById("imageAuthor"));
 
+//Delegate calls from "change background" button's onclick
+const changeBackground = () => bgManager.changeBackground.call(bgManager);
 /**Updates variables after a change in the current day. Must be called AFTER ajaxRequester callback.*/
 const dayUpdate = function() {
 	var initDate = new Date();
@@ -67,10 +70,10 @@ const dayUpdate = function() {
 	//Update the timetable.
 	freeOrClassUpdate(initDay, 0);
 
-	//Set initial background. Set backgroundNum to the max so it becomes 0 in the first changeBackground() call.
+	//Set initial background. Set bgManager.curIdx to the max so it becomes 0 in the first changeBackground() call.
 	//Needed in dayUpdate() to reset the background if it's set to cycle.
-	backgroundNum = backgroundList.length - 1;
-	changeBackground();
+	bgManager.curIdx = bgManager.bgList.length - 1;
+	bgManager.changeBackground();
 
 	//Cache and update the menu. Placed last due to being the most error-prone part.
 	//TODO: update menuURL and fetch the menu again if the month has changed
@@ -298,14 +301,14 @@ ajaxRequester.request("data.txt", function(data) {
 					while(words[index] !== "end") bg.author += words[index++] + ' ';
 				}
 				index++;
-				backgroundList.push(bg);
+				bgManager.bgList.push(bg);
 			}
 			if(words[++index] === "cycle") {
 				cycleBackgrounds = true;
 				index++;
-				backgroundList[0].setAt = 0;
-				for(var i = 1;i < backgroundList.length;i++) {
-					backgroundList[i].setAt = milFromMidnight(parseInt(words[index++]), parseInt(words[index++]));
+				bgManager.bgList[0].setAt = 0;
+				for(var i = 1;i < bgManager.bgList.length;i++) {
+					bgManager.bgList[i].setAt = milFromMidnight(parseInt(words[index++]), parseInt(words[index++]));
 				}
 			}
 			break;
@@ -319,7 +322,7 @@ ajaxRequester.request("data.txt", function(data) {
 	week[tempDay].lunchStart = 1;
 	week[tempDay].subjects = ["1", "2", "3", "4"];
 	classTime = [5, 5, 5, 5], restTime = [5, 5, 5, 5];
-	backgroundList[1].setAt = milFromMidnight(tempDate.getHours(), tempDate.getMinutes(), tempDate.getSeconds() + 35);*/
+	bgManager.bgList[1].setAt = milFromMidnight(tempDate.getHours(), tempDate.getMinutes(), tempDate.getSeconds() + 35);*/
 	
 	//Generate entries. They will be naturally sorted.
 	for(var day = 0;day < 7;day++) {

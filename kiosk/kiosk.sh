@@ -12,6 +12,6 @@ python3 downloadPage.py "http://stu.sen.go.kr/sts_sci_md00_001.do?schulCode=B100
 cd ..
 unclutter &
 python3 -m http.server &
-su pi -c "chromium-browser --kiosk --incognito 0.0.0.0:8000/timer.html"
+su pi -c "chromium-browser --window-size=1920,1080 --kiosk --incognito 0.0.0.0:8000/timer.html"
 
 #su pi -c chromium-browser /home/pi/ct/timer.html --disable-web-security --user-data-dir --kiosk
