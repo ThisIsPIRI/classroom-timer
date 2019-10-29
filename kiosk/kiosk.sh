@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # Written for Raspbian. Usage: sudo xinit ./kiosk.sh
 sudo service ntp stop
 sudo ntpdate 0.kr.pool.ntp.org
