@@ -9,7 +9,7 @@ cd ct
 cd lib
 # The resulting string below is the same as what AddDate in data.txt adds to the menuURL.
 yearMonth=$(date +%Y%m)
-python3 downloadPage.py "http://stu.sen.go.kr/sts_sci_md00_001.do?schulCode=B100000456&schulCrseScCode=3&SchulKndScCode=04&schYm=" menu$yearMonth
+wget -O menu$yearMonth "https://stu.sen.go.kr/sts_sci_md00_001.do?schulCode=B100000456&schulCrseScCode=3&SchulKndScCode=04&schYm="
 cd ..
 unclutter &
 python3 -m http.server &
